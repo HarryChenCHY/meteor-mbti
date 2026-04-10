@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>星陨人格宇宙 | Meteor MBTI Universe</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{space:{950:'#020617',900:'#0f172a',800:'#1e1b4b'},nebula:{purple:'#6366f1',pink:'#d946ef',cyan:'#22d3ee'}},boxShadow:{glow:'0 0 20px rgba(99,102,241,0.4)',neon:'0 0 10px #22d3ee,0 0 30px #22d3ee,0 0 60px rgba(34,211,238,0.3)',card:'0 0 15px rgba(99,102,241,0.2),inset 0 1px 0 rgba(255,255,255,0.05)'},animation:{float:'float 6s ease-in-out infinite','float-slow':'float 8s ease-in-out infinite','spin-slow':'spin 20s linear infinite','pulse-glow':'pulseGlow 3s ease-in-out infinite',twinkle:'twinkle 3s ease-in-out infinite'},keyframes:{float:{'0%,100%':{transform:'translateY(0px)'},'50%':{transform:'translateY(-20px)'}},pulseGlow:{'0%,100%':{boxShadow:'0 0 20px rgba(34,211,238,0.3)'},'50%':{boxShadow:'0 0 40px rgba(34,211,238,0.6),0 0 80px rgba(99,102,241,0.3)'}},twinkle:{'0%,100%':{opacity:1},'50%':{opacity:0.3}}}}}};
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans SC',sans-serif;background:#020617;color:#fff;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#0f172a}
+::-webkit-scrollbar-thumb{background:#6366f1;border-radius:3px}
+#stars-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.glass{background:rgba(15,23,42,0.6);backdrop-filter:blur(16px);border:1px solid rgba(99,102,241,0.15)}
+.glass-card{background:rgba(15,23,42,0.5);backdrop-filter:blur(12px);border:1px solid rgba(99,102,241,0.2);border-radius:1rem;transition:all .3s}
+.glass-card:hover{border-color:rgba(34,211,238,0.4);box-shadow:0 0 30px rgba(99,102,241,0.2)}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:12px 32px;border-radius:9999px;font-weight:700;transition:all .3s;position:relative;overflow:hidden}
+.btn-primary:hover{transform:scale(1.05);box-shadow:0 0 30px rgba(99,102,241,0.5)}
+.btn-outline{border:1px solid #22d3ee;color:#22d3ee;padding:10px 28px;border-radius:9999px;font-weight:600;transition:all .3s;background:transparent}
+.btn-outline:hover{background:rgba(34,211,238,0.1);box-shadow:0 0 20px rgba(34,211,238,0.3)}
+.energy-bar{height:12px;border-radius:9999px;background:linear-gradient(90deg,#6366f1,#22d3ee,#d946ef);transition:width .6s ease}
+.tag{display:inline-block;padding:4px 14px;border-radius:9999px;font-size:12px;border:1px solid rgba(99,102,241,0.3);background:rgba(99,102,241,0.1);margin:2px}
+.orbit{border:1px dashed rgba(99,102,241,0.25);border-radius:50%;position:absolute;animation:spin 20s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade-in{animation:fadeIn .6s ease forwards}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.page-enter{animation:pageEnter .5s ease forwards}
+@keyframes pageEnter{from{opacity:0;transform:scale(0.97)}to{opacity:1;transform:scale(1)}}
+</style>
+</head>
+<body>
+<canvas id="stars-canvas"></canvas>
+<div id="mouse-glow" style="position:fixed;top:0;left:0;width:400px;height:400px;background:radial-gradient(circle,rgba(99,102,241,0.12),transparent 70%);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:all 0.1s ease-out;display:none"></div>
+<div id="app"></div>
+
+<script>
+document.addEventListener('mousemove',e=>{
+const g=document.getElementById('mouse-glow');
+g.style.display='block';
+g.style.left=e.clientX+'px';
+g.style.top=e.clientY+'px';
+});
+// === 星空粒子系统 ===
+(function(){
+const c=document.getElementById('stars-canvas'),ctx=c.getContext('2d');
+let stars=[];const N=200;
+function resize(){c.width=window.innerWidth;c.height=window.innerHeight;init()}
+function init(){stars=[];for(let i=0;i<N;i++)stars.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5+0.3,a:Math.random(),da:Math.random()*0.02-0.01,speed:Math.random()*0.3+0.05})}
+function draw(){ctx.clearRect(0,0,c.width,c.height);
+// 星云背景光晕
+let g1=ctx.createRadialGradient(c.width*0.3,c.height*0.4,0,c.width*0.3,c.height*0.4,c.width*0.5);
+g1.addColorStop(0,'rgba(99,102,241,0.05)');g1.addColorStop(1,'transparent');ctx.fillStyle=g1;ctx.fillRect(0,0,c.width,c.height);
+let g2=ctx.createRadialGradient(c.width*0.7,c.height*0.6,0,c.width*0.7,c.height*0.6,c.width*0.4);
+g2.addColorStop(0,'rgba(217,70,239,0.03)');g2.addColorStop(1,'transparent');ctx.fillStyle=g2;ctx.fillRect(0,0,c.width,c.height);
+stars.forEach(s=>{s.a+=s.da;if(s.a>1||s.a<0.2)s.da*=-1;s.y-=s.speed;if(s.y<-5){s.y=c.height+5;s.x=Math.random()*c.width}
+ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(200,210,255,${s.a})`;ctx.fill()});
+// 偶尔流星
+if(Math.random()<0.002){let mx=Math.random()*c.width,my=0;ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx+80,my+80);
+let sg=ctx.createLinearGradient(mx,my,mx+80,my+80);sg.addColorStop(0,'rgba(34,211,238,0.8)');sg.addColorStop(1,'transparent');ctx.strokeStyle=sg;ctx.lineWidth=1.5;ctx.stroke()}
+requestAnimationFrame(draw)}
+window.addEventListener('resize',resize);resize();draw()
+})();
+</script>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback}=React;
+
+// ========== 假数据 ==========
+const MBTI_LIST=['INTJ-建筑师','INTP-逻辑学家','ENTJ-指挥官','ENTP-辩论家','INFJ-提倡者','INFP-调停者','ENFJ-主人公','ENFP-竞选者','ISTJ-物流师','ISFJ-守卫者','ESTJ-总经理','ESFJ-执政官','ISTP-鉴赏家','ISFP-探险家','ESTP-企业家','ESFP-表演者'];
+const SIGNS=['白羊座','金牛座','双子座','巨蟹座','狮子座','处女座','天秤座','天蝎座','射手座','摩羯座','水瓶座','双鱼座'];
+const BLOODS=['A型','B型','O型','AB型'];
+const STYLES=['偏可爱','偏神秘','偏酷感','偏治愈'];
+const FORMS=['更像陨石','更像宇宙精灵'];
+const RENDERS=['3D手办感','卡通插画感'];
+const PTYPES=['守护型','探索型','预言型','社交型'];
+
+const MOCK_RESULT={name:'星陨·织梦者',id:'MTR-2026-AX7721',planetCode:'PLN-Ψ-4019',mbti:'INFP',sign:'双鱼座',star:'织女星·Vega',
+desc:'一颗来自梦境星云边缘的温柔陨石，表面覆盖着淡紫色星尘与透明晶体。它拥有强烈的共情能力，能感知主人情绪的细微波动。在宇宙的漫长旅途中，它收集了无数星球的故事碎片，编织成只属于你的星空絮语。',
+stage:'初始期·胚芽形态',skills:['星语感应Lv.1','梦境编织Lv.1','星尘护盾Lv.0'],tags:['温柔','梦幻','直觉','治愈','内省'],
+trajectory:['梦境星云→','星尘走廊→','织女星域→','你的身边'],bindDesc:'你是它在茫茫宇宙中唯一的引力锚点。当你快乐时，它表面的晶体会折射出彩虹色的光芒；当你低落时，它会轻轻发出温暖的紫色脉冲。',
+broadcast:'今日宇宙播报：织女星域气温宜人，适合冥想与创作。你的陨石正在吸收来自天琴座的灵感粒子，创造力+15%。',
+future:'近期宇宙能量暗示你将遇到一个志同道合的灵魂。保持开放的心态，星光会为你指引方向。'};
+
+const MOCK_ARCHIVE={nickname:'星尘旅人',avatar:'🌙',meteorName:'星陨·织梦者',energy:62,level:'初始期',
+skills:[{name:'星语感应',lv:2},{name:'梦境编织',lv:1},{name:'星尘护盾',lv:1}],
+timeline:[{date:'2026-03-20',event:'陨石诞生于梦境星云'},{date:'2026-03-22',event:'首次星语感应成功'},{date:'2026-03-25',event:'完成3次天文答题，星尘护盾觉醒'}],
+recentDivine:'今天适合仰望猎户座方向，灵感会在繁星间流淌。',notes:['在阳台看到了北斗七星','今夜银河清晰可见'],records:['与陨石聊了未来的旅行','查看了今日宇宙播报']};
+
+const MOCK_QUIZ=[
+{q:'太阳系中最大的行星是？',opts:['土星','木星','天王星','海王星'],ans:1},
+{q:'光从太阳到达地球大约需要多长时间？',opts:['8分钟','80分钟','8秒','8小时'],ans:0},
+{q:'银河系的直径大约是多少光年？',opts:['1万','10万','100万','1000万'],ans:1},
+{q:'以下哪颗不是太阳系的行星？',opts:['水星','冥王星','金星','火星'],ans:1},
+{q:'北极星属于哪个星座？',opts:['北斗座','小熊座','大熊座','仙后座'],ans:1}];
+
+const MOCK_ACTIVITIES=[
+{title:'今晚观星打卡',desc:'今晚9点，一起抬头看星空并分享你的观星照片吧！',reward:'+20 星星能量',status:'进行中',participants:128},
+{title:'一周星象挑战',desc:'连续7天记录星空变化，解锁限定陨石皮肤。',reward:'限定外观+50能量',status:'报名中',participants:89},
+{title:'MBTI陨石共创活动',desc:'不同MBTI类型的陨石组队，完成星际协作任务。',reward:'+100 星星能量',status:'即将开始',participants:256},
+{title:'陨石人格故事征集',desc:'写下你与陨石的故事，优秀作品将登上首页。',reward:'首页展示+30能量',status:'进行中',participants:67},
+{title:'角色装扮征集',desc:'为你的陨石人格设计专属装扮配件。',reward:'定制装扮+80能量',status:'报名中',participants:43}];
+
+const MOCK_COMMUNITY=[
+{user:'银河猎人',meteor:'星陨·烈焰',rarity:'稀有',likes:234,type:'热门'},
+{user:'深空漫步者',meteor:'星陨·幽蓝',rarity:'传说',likes:189,type:'稀有'},
+{user:'星尘收集者',meteor:'星陨·翠灵',rarity:'普通',likes:156,type:'最新'},
+{user:'宇宙画师',meteor:'星陨·虹光',rarity:'稀有',likes:312,type:'热门'},
+{user:'天文小白',meteor:'星陨·暖阳',rarity:'普通',likes:98,type:'最新'},
+{user:'猎户座之子',meteor:'星陨·暗影',rarity:'传说',likes:445,type:'稀有'},
+{user:'月光诗人',meteor:'星陨·柔光',rarity:'稀有',likes:167,type:'热门'},
+{user:'星海拾贝',meteor:'星陨·碎冰',rarity:'普通',likes:78,type:'最新'},
+{user:'极光守望',meteor:'星陨·极光',rarity:'传说',likes:521,type:'稀有'}];
+
+const GRADIENTS=['from-indigo-500 to-purple-600','from-cyan-400 to-blue-600','from-pink-500 to-rose-600','from-violet-500 to-fuchsia-600','from-teal-400 to-cyan-600','from-amber-400 to-orange-600','from-emerald-400 to-teal-600','from-blue-500 to-indigo-600','from-rose-400 to-pink-600'];
+
+// ========== 通用组件 ==========
+function Navbar({current,onNavigate}){
+const pages=[
+{key:'home',label:'首页'},{key:'create',label:'创建'},{key:'archive',label:'宇宙档案'},
+{key:'cultivate',label:'养成'},{key:'quiz',label:'答题'},{key:'notes',label:'观星笔记'},
+{key:'activities',label:'活动'},{key:'interact',label:'互动'},{key:'community',label:'社区'}];
+return(
+<nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-indigo-500/10">
+<div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+<div className="flex items-center gap-2 cursor-pointer" onClick={()=>onNavigate('home')}>
+<span className="text-2xl">🌠</span>
+<span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-nebula-purple text-lg">星陨宇宙</span>
+</div>
+<div className="flex gap-1 flex-wrap justify-end">
+{pages.map(p=>(
+<button key={p.key} onClick={()=>onNavigate(p.key)}
+className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${current===p.key?'bg-nebula-purple/30 text-cyan-300 shadow-glow':'text-gray-400 hover:text-white hover:bg-white/5'}`}>
+{p.label}</button>))}
+</div></div></nav>)}
+
+function PageWrapper({children}){return <div className="relative z-10 pt-16 min-h-screen">{children}</div>}
+
+function SectionTitle({title,sub}){return(
+<div className="text-center mb-12">
+<h2 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-nebula-purple">{title}</h2>
+{sub&&<p className="mt-3 text-indigo-300/70 text-sm">{sub}</p>}
+</div>)}
+
+function MeteorOrb({size=160,colors='from-nebula-purple to-cyan-400',glow=true,animate=true}){return(
+<div className={`relative ${animate?'animate-float':''}`} style={{width:size,height:size}}>
+{glow&&<div className="absolute inset-0 rounded-full animate-pulse-glow" style={{filter:'blur(20px)',background:'radial-gradient(circle,rgba(34,211,238,0.3),transparent)'}}/>}
+<div className={`w-full h-full rounded-full bg-gradient-to-br ${colors} relative overflow-hidden`}>
+<div className="absolute inset-2 rounded-full bg-gradient-to-tl from-white/20 to-transparent"/>
+<div className="absolute bottom-3 right-3 w-1/4 h-1/4 rounded-full bg-white/10 blur-sm"/>
+</div></div>)}
+
+function InfoCard({label,value,icon}){return(
+<div className="glass-card p-4">
+<div className="text-xs text-indigo-400 mb-1">{icon} {label}</div>
+<div className="font-bold text-white text-sm">{value}</div>
+</div>)}
+
+function EnergyBar({value,max=100}){return(
+<div className="w-full">
+<div className="flex justify-between text-xs mb-1"><span className="text-indigo-300">星星能量</span><span className="text-cyan-300">{value}/{max}</span></div>
+<div className="h-3 bg-space-900 rounded-full overflow-hidden border border-indigo-500/20">
+<div className="energy-bar h-full" style={{width:`${(value/max)*100}%`}}/></div></div>)}
+
+// ========== 页面组件 ==========
+
+// 1. 首页
+function HomePage({onNavigate}){
+const exampleCards=[
+{name:'星陨·烈焰',mbti:'ENTJ',sign:'狮子座',grad:'from-orange-500 to-red-600'},
+{name:'星陨·幽蓝',mbti:'INFP',sign:'双鱼座',grad:'from-blue-500 to-indigo-600'},
+{name:'星陨·翠灵',mbti:'ENFP',sign:'双子座',grad:'from-emerald-400 to-teal-600'},
+{name:'星陨·暗影',mbti:'INTJ',sign:'天蝎座',grad:'from-violet-600 to-purple-900'},
+];
+return(<PageWrapper>
+{/* Hero */}
+<section className="relative min-h-[90vh] flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.18),transparent_70%)]"/>
+<div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(34,211,238,0.16),transparent_32%),radial-gradient(circle_at_80%_10%,rgba(217,70,239,0.14),transparent_30%)]"/>
+<div className="orbit w-[600px] h-[600px] opacity-20" style={{top:'-10%',left:'-10%'}}/>
+<div className="orbit w-[400px] h-[400px] opacity-15" style={{top:'20%',right:'-5%',animationDuration:'15s'}}/>
+<div className="relative z-10 fade-in">
+<div className="mb-8 flex justify-center"><MeteorOrb size={120}/></div>
+<h1 className="text-5xl md:text-7xl lg:text-8xl font-black leading-tight neon-title">
+<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-fuchsia-200 to-indigo-200">星陨人格宇宙</span>
+</h1>
+<p className="text-lg text-indigo-300/80 mt-2 tracking-widest">METEOR MBTI UNIVERSE</p>
+<p className="mt-6 text-lg md:text-xl text-indigo-200 max-w-2xl mx-auto leading-relaxed">
+把你的性格、星座、记忆与宇宙信息<br/>铸造成唯一的<span className="text-cyan-300 font-bold">陨石生命体</span>
+</p>
+<div className="mt-10 flex gap-4 justify-center flex-wrap">
+<button onClick={()=>onNavigate('create')} className="btn-primary text-lg px-10 py-4">🌠 立即生成我的陨石人格</button>
+<button onClick={()=>onNavigate('community')} className="btn-outline">探索星际社区</button>
+</div></div></section>
+
+{/* 示例角色卡片 */}
+<section className="max-w-6xl mx-auto px-6 py-20">
+<SectionTitle title="已诞生的陨石生命体" sub="每一颗都独一无二，承载着主人的灵魂印记"/>
+<div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+{exampleCards.map((c,i)=>(
+<div key={i} className="glass-card p-6 text-center fade-in" style={{animationDelay:`${i*0.1}s`}}>
+<div className="flex justify-center mb-4"><MeteorOrb size={80} colors={c.grad}/></div>
+<h3 className="font-bold text-white">{c.name}</h3>
+<div className="mt-2 flex gap-1 justify-center"><span className="tag">{c.mbti}</span><span className="tag">{c.sign}</span></div>
+</div>))}
+</div></section>
+
+{/* 生成逻辑 */}
+<section className="max-w-5xl mx-auto px-6 py-20">
+<SectionTitle title="铸造逻辑" sub="六维宇宙参数，AI推演你的专属陨石"/>
+<div className="flex flex-wrap justify-center items-center gap-3 text-center">
+{['MBTI','星座','血型','年龄','照片','AI推演'].map((t,i)=>(
+<React.Fragment key={i}>
+<div className="glass-card px-6 py-4 text-sm font-bold">{t}</div>
+{i<5&&<span className="text-cyan-400 text-xl">+</span>}
+</React.Fragment>))}
+<span className="text-cyan-400 text-xl mx-2">=</span>
+<div className="glass-card px-6 py-4 border-cyan-400/40 text-cyan-300 font-bold">专属陨石人格</div>
+</div></section>
+
+{/* 养成说明 */}
+<section className="max-w-5xl mx-auto px-6 py-20">
+<SectionTitle title="喂养你的陨石" sub="让它在宇宙中持续成长"/>
+<div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+{[{icon:'📝',title:'天文答题',desc:'回答天文知识获得星星能量'},{icon:'🔭',title:'观星笔记',desc:'记录星空，喂养灵感'},{icon:'🎪',title:'社群活动',desc:'参与活动赢取限定奖励'},{icon:'💬',title:'陨石互动',desc:'和你的陨石聊天对话'}].map((item,i)=>(
+<div key={i} className="glass-card p-6 text-center">
+<div className="text-4xl mb-3">{item.icon}</div>
+<h3 className="font-bold mb-2">{item.title}</h3>
+<p className="text-xs text-indigo-300">{item.desc}</p>
+</div>))}
+</div></section>
+
+{/* 永生档案 */}
+<section className="max-w-4xl mx-auto px-6 py-20 text-center">
+<SectionTitle title="宇宙档案·永生机制" sub="你的陨石将永远存在于这片星空中"/>
+<div className="glass-card p-10 max-w-2xl mx-auto">
+<p className="text-indigo-200 leading-relaxed">每颗陨石人格一经铸造，即获得永久宇宙编号。它的成长记录、性格演化、星轨数据将被永久收录在星际档案馆中。即使星海变迁，你的陨石也将在这片数字宇宙中永恒闪耀。</p>
+</div></section>
+
+{/* 页脚 */}
+<footer className="border-t border-indigo-500/10 py-12 text-center text-indigo-400/50 text-xs">
+<p>🌠 星际档案馆 · Meteor MBTI Universe</p>
+<p className="mt-1">© 2026 星陨人格宇宙 — 你的灵魂，值得一颗星</p>
+</footer>
+</PageWrapper>)}
+
+// 2. 创建页
+function CreatePage({onNavigate}){
+const [step,setStep]=useState(1);
+const [form,setForm]=useState({nickname:'',mbti:'',sign:'',blood:'',age:'',style:'',form:'',render:'',ptype:''});
+const upd=(k,v)=>setForm({...form,[k]:v});
+const titles=['基础人格信息','上传形象信息','生成偏好选择','确认铸造'];
+return(<PageWrapper>
+<div className="max-w-2xl mx-auto px-6 py-20">
+<SectionTitle title="铸造你的陨石人格" sub={`STEP ${step}/4 · ${titles[step-1]}`}/>
+{/* 步骤条 */}
+<div className="flex gap-2 mb-10">
+{[1,2,3,4].map(s=>(
+<div key={s} className="flex-1 h-1.5 rounded-full transition-all duration-500" style={{background:step>=s?'linear-gradient(90deg,#6366f1,#22d3ee)':'#1e1b4b'}}/>))}
+</div>
+<div className="glass-card p-10 page-enter" key={step}>
+{step===1&&(
+<div className="space-y-5">
+<div><label className="text-xs text-indigo-300 mb-1 block">昵称</label>
+<input value={form.nickname} onChange={e=>upd('nickname',e.target.value)} placeholder="输入你的宇宙代号" className="w-full bg-space-950 border border-indigo-500/30 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none transition-colors"/></div>
+<div><label className="text-xs text-indigo-300 mb-1 block">MBTI 类型</label>
+<select value={form.mbti} onChange={e=>upd('mbti',e.target.value)} className="w-full bg-space-950 border border-indigo-500/30 rounded-xl px-4 py-3 text-white focus:border-cyan-400 focus:outline-none">
+<option value="">选择你的 MBTI</option>{MBTI_LIST.map(m=><option key={m} value={m}>{m}</option>)}</select></div>
+<div className="grid grid-cols-2 gap-4">
+<div><label className="text-xs text-indigo-300 mb-1 block">星座</label>
+<select value={form.sign} onChange={e=>upd('sign',e.target.value)} className="w-full bg-space-950 border border-indigo-500/30 rounded-xl px-4 py-3 text-white focus:border-cyan-400 focus:outline-none">
+<option value="">选择星座</option>{SIGNS.map(s=><option key={s}>{s}</option>)}</select></div>
+<div><label className="text-xs text-indigo-300 mb-1 block">血型</label>
+<select value={form.blood} onChange={e=>upd('blood',e.target.value)} className="w-full bg-space-950 border border-indigo-500/30 rounded-xl px-4 py-3 text-white focus:border-cyan-400 focus:outline-none">
+<option value="">选择血型</option>{BLOODS.map(b=><option key={b}>{b}</option>)}</select></div></div>
+<div><label className="text-xs text-indigo-300 mb-1 block">年龄</label>
+<input type="number" value={form.age} onChange={e=>upd('age',e.target.value)} placeholder="输入年龄" className="w-full bg-space-950 border border-indigo-500/30 rounded-xl px-4 py-3 focus:border-cyan-400 focus:outline-none"/></div>
+</div>)}
+
+{step===2&&(
+<div className="space-y-6">
+<div className="border-2 border-dashed border-indigo-500/30 rounded-2xl p-10 text-center hover:border-cyan-400/50 transition-colors cursor-pointer">
+<div className="text-4xl mb-3">📷</div>
+<p className="text-indigo-300 text-sm">点击上传个人形象照片</p>
+<p className="text-indigo-400/50 text-xs mt-1">支持 JPG/PNG，建议正面清晰照</p></div>
+<div className="border-2 border-dashed border-indigo-500/20 rounded-2xl p-8 text-center hover:border-indigo-400/30 transition-colors cursor-pointer">
+<div className="text-3xl mb-2">🎨</div>
+<p className="text-indigo-400 text-sm">上传风格参考图（可选）</p></div>
+<div><label className="text-xs text-indigo-300 mb-2 block">希望生成的风格</label>
+<div className="flex gap-2 flex-wrap">{STYLES.map(s=>(
+<button key={s} onClick={()=>upd('style',s)} className={`tag cursor-pointer transition-all ${form.style===s?'bg-nebula-purple/40 border-cyan-400 text-cyan-300':'hover:bg-white/5'}`}>{s}</button>))}</div></div>
+</div>)}
+
+{step===3&&(
+<div className="space-y-6">
+<div><label className="text-xs text-indigo-300 mb-2 block">角色形态偏好</label>
+<div className="flex gap-3">{FORMS.map(f=>(
+<button key={f} onClick={()=>upd('form',f)} className={`flex-1 glass-card p-4 text-center text-sm cursor-pointer transition-all ${form.form===f?'border-cyan-400 text-cyan-300 shadow-glow':''}`}>{f}</button>))}</div></div>
+<div><label className="text-xs text-indigo-300 mb-2 block">视觉风格偏好</label>
+<div className="flex gap-3">{RENDERS.map(r=>(
+<button key={r} onClick={()=>upd('render',r)} className={`flex-1 glass-card p-4 text-center text-sm cursor-pointer transition-all ${form.render===r?'border-cyan-400 text-cyan-300 shadow-glow':''}`}>{r}</button>))}</div></div>
+<div><label className="text-xs text-indigo-300 mb-2 block">人格倾向</label>
+<div className="grid grid-cols-2 gap-3">{PTYPES.map(p=>(
+<button key={p} onClick={()=>upd('ptype',p)} className={`glass-card p-4 text-center text-sm cursor-pointer transition-all ${form.ptype===p?'border-cyan-400 text-cyan-300 shadow-glow':''}`}>{p}</button>))}</div></div>
+</div>)}
+
+{step===4&&(
+<div className="space-y-6">
+<h3 className="text-lg font-bold text-cyan-300 mb-4">📋 铸造信息确认</h3>
+<div className="grid grid-cols-2 gap-3 text-sm">
+{[['昵称',form.nickname||'星尘旅人'],['MBTI',form.mbti||'INFP-调停者'],['星座',form.sign||'双鱼座'],['血型',form.blood||'O型'],['年龄',form.age||'22'],['风格',form.style||'偏治愈'],['形态',form.form||'更像宇宙精灵'],['视觉',form.render||'卡通插画感'],['人格',form.ptype||'守护型']].map(([k,v],i)=>(
+<div key={i} className="glass-card p-3"><span className="text-indigo-400 text-xs">{k}</span><div className="font-bold mt-0.5">{v}</div></div>))}
+</div>
+<button onClick={()=>onNavigate('generating')} className="btn-primary w-full py-4 text-lg mt-4">🌠 开始铸造我的陨石人格</button>
+</div>)}
+
+<div className="mt-8 flex justify-between">
+{step>1?<button onClick={()=>setStep(step-1)} className="text-indigo-400 hover:text-white transition-colors text-sm">← 上一步</button>:<span/>}
+{step<4&&<button onClick={()=>setStep(step+1)} className="btn-outline text-sm">下一步 →</button>}
+</div>
+</div></div>
+</PageWrapper>)}
+
+// 3. AI生成过渡页
+function GeneratingPage({onNavigate}){
+const steps=['扫描宇宙坐标...','读取MBTI维度...','匹配星宿参数...','重组陨石碎片...','生成人格轨迹...','编写宇宙档案...','铸造唯一生命编号...','完成！'];
+const [idx,setIdx]=useState(0);
+const [progress,setProgress]=useState(0);
+useEffect(()=>{const t=setInterval(()=>{setIdx(i=>{if(i>=steps.length-1){clearInterval(t);setTimeout(()=>onNavigate('result'),800);return i}return i+1});
+setProgress(p=>Math.min(p+13,100))},900);return()=>clearInterval(t)},[]);
+return(<PageWrapper>
+<div className="min-h-screen flex flex-col items-center justify-center px-6">
+<div className="relative w-48 h-48 mb-12">
+<div className="orbit w-full h-full" style={{animationDuration:'3s'}}/>
+<div className="orbit w-36 h-36 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" style={{animationDuration:'2s',animationDirection:'reverse'}}/>
+<div className="absolute inset-0 flex items-center justify-center">
+<div className="w-20 h-20 rounded-full bg-gradient-to-br from-nebula-purple to-cyan-400 animate-pulse-glow"/></div>
+</div>
+<div className="text-center max-w-md">
+<h2 className="text-2xl font-bold text-cyan-300 mb-6">陨石铸造中</h2>
+<div className="space-y-2 mb-8">
+{steps.map((s,i)=>(
+<div key={i} className={`text-sm transition-all duration-500 ${i<=idx?'text-white':'text-indigo-500/30'} ${i===idx?'text-cyan-300 font-bold':''}`}>
+{i<idx?'✓':i===idx?'⟐':'○'} {s}</div>))}
+</div>
+<div className="h-2 bg-space-900 rounded-full overflow-hidden border border-indigo-500/20">
+<div className="energy-bar h-full transition-all duration-700" style={{width:`${progress}%`}}/></div>
+<p className="mt-3 text-xs text-indigo-400">{progress}%</p>
+</div></div>
+</PageWrapper>)}
+
+// 4. 结果页
+function ResultPage({onNavigate}){
+const d=MOCK_RESULT;
+return(<PageWrapper>
+<div className="max-w-6xl mx-auto px-6 py-16">
+<div className="grid md:grid-cols-[350px_1fr] gap-10">
+{/* 左侧主视觉 */}
+<div className="flex flex-col items-center">
+<div className="page-enter"><MeteorOrb size={260} colors="from-indigo-500 via-purple-500 to-pink-500"/></div>
+<h1 className="mt-6 text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-pink-300">{d.name}</h1>
+<p className="text-indigo-400 text-sm mt-2 tracking-widest">{d.id}</p>
+<div className="flex gap-2 mt-4 flex-wrap justify-center">{d.tags.map(t=><span key={t} className="tag">{t}</span>)}</div>
+<div className="mt-8 flex gap-3 flex-wrap justify-center">
+<button onClick={()=>onNavigate('archive')} className="btn-primary text-sm">💾 存入宇宙档案</button>
+<button onClick={()=>onNavigate('community')} className="btn-outline text-sm">🌍 分享到社区</button>
+<button onClick={()=>onNavigate('create')} className="text-xs text-indigo-400 hover:text-cyan-300 underline underline-offset-4 mt-2 w-full text-center">重新铸造</button>
+</div></div>
+{/* 右侧档案 */}
+<div className="space-y-4 fade-in">
+<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+<InfoCard icon="🪐" label="星球代码" value={d.planetCode}/>
+<InfoCard icon="🧬" label="MBTI映射" value={d.mbti}/>
+<InfoCard icon="⭐" label="守护星宿" value={d.star}/>
+<InfoCard icon="🌱" label="成长阶段" value={d.stage}/>
+<InfoCard icon="♓" label="星座" value={d.sign}/>
+<InfoCard icon="🛤" label="行动轨迹" value={d.trajectory.join(' ')}/>
+</div>
+<div className="glass-card p-6">
+<h3 className="text-sm text-indigo-400 mb-2">📖 性格描述</h3>
+<p className="text-indigo-200 text-sm leading-relaxed">{d.desc}</p></div>
+<div className="glass-card p-6">
+<h3 className="text-sm text-indigo-400 mb-2">🔮 初始技能</h3>
+<div className="flex gap-2 flex-wrap">{d.skills.map(s=><span key={s} className="tag text-cyan-300 border-cyan-400/30">{s}</span>)}</div></div>
+<div className="glass-card p-6">
+<h3 className="text-sm text-indigo-400 mb-2">💫 羁绊说明</h3>
+<p className="text-indigo-200 text-sm leading-relaxed">{d.bindDesc}</p></div>
+<div className="glass-card p-6 border-cyan-400/20">
+<h3 className="text-sm text-cyan-400 mb-2">📡 今日宇宙播报</h3>
+<p className="text-cyan-200/80 text-sm leading-relaxed">{d.broadcast}</p></div>
+<div className="glass-card p-6 border-pink-400/20">
+<h3 className="text-sm text-pink-400 mb-2">🔭 未来倾向</h3>
+<p className="text-pink-200/80 text-sm leading-relaxed">{d.future}</p></div>
+</div></div></div>
+</PageWrapper>)}
+
+// 5. 宇宙档案页
+function ArchivePage({onNavigate}){
+const a=MOCK_ARCHIVE;
+return(<PageWrapper>
+<div className="max-w-5xl mx-auto px-6 py-16">
+<SectionTitle title="宇宙档案" sub="你的专属星际身份证"/>
+<div className="grid md:grid-cols-[280px_1fr] gap-8">
+<div className="space-y-6">
+<div className="glass-card p-8 text-center">
+<div className="text-6xl mb-3">{a.avatar}</div>
+<h3 className="text-xl font-bold">{a.nickname}</h3>
+<p className="text-indigo-400 text-sm mt-1">宇宙旅人</p>
+<div className="mt-4"><EnergyBar value={a.energy}/></div>
+</div>
+<div className="glass-card p-6 text-center">
+<MeteorOrb size={100} colors="from-indigo-500 to-pink-500"/>
+<p className="font-bold mt-3">{a.meteorName}</p>
+<p className="text-xs text-indigo-400 mt-1">{a.level}</p>
+</div>
+<button onClick={()=>onNavigate('cultivate')} className="btn-outline w-full text-sm">获取更多星能 →</button>
+</div>
+<div className="space-y-4">
+<div className="glass-card p-6">
+<h3 className="text-sm text-indigo-400 mb-3">🔮 技能列表</h3>
+<div className="space-y-2">{a.skills.map(s=>(
+<div key={s.name} className="flex items-center gap-3"><span className="text-sm font-bold text-white">{s.name}</span>
+<div className="flex-1 h-2 bg-space-950 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 rounded-full" style={{width:`${s.lv*30}%`}}/></div>
+<span className="text-xs text-cyan-300">Lv.{s.lv}</span></div>))}</div></div>
+<div className="glass-card p-6">
+<h3 className="text-sm text-indigo-400 mb-3">📅 成长时间线</h3>
+<div className="space-y-3 border-l-2 border-indigo-500/20 pl-4">{a.timeline.map((t,i)=>(
+<div key={i}><span className="text-xs text-cyan-400">{t.date}</span><p className="text-sm text-indigo-200">{t.event}</p></div>))}</div></div>
+<div className="glass-card p-6 border-cyan-400/20">
+<h3 className="text-sm text-cyan-400 mb-2">🔭 最近占卜播报</h3>
+<p className="text-sm text-cyan-200/80">{a.recentDivine}</p></div>
+<div className="grid grid-cols-2 gap-4">
+<div className="glass-card p-5"><h3 className="text-xs text-indigo-400 mb-2">📓 观星笔记</h3>{a.notes.map((n,i)=><p key={i} className="text-xs text-indigo-200 mt-1">• {n}</p>)}</div>
+<div className="glass-card p-5"><h3 className="text-xs text-indigo-400 mb-2">💬 互动记录</h3>{a.records.map((r,i)=><p key={i} className="text-xs text-indigo-200 mt-1">• {r}</p>)}</div>
+</div></div></div></div>
+</PageWrapper>)}
+
+// 6. 养成页
+function CultivatePage({onNavigate}){
+const [energy,setEnergy]=useState(62);
+const [stage,setStage]=useState(0);
+const stages=['胚芽形态','星核形态','星云形态','恒星形态','超新星形态'];
+const stageColors=['from-indigo-500 to-purple-600','from-cyan-400 to-blue-600','from-pink-500 to-purple-600','from-amber-400 to-orange-500','from-white to-cyan-300'];
+const skills=[{name:'星语感应',lv:2,max:5},{name:'梦境编织',lv:1,max:5},{name:'星尘护盾',lv:1,max:5},{name:'时空漫步',lv:0,max:5}];
+const feed=()=>{setEnergy(e=>{const nv=Math.min(e+15,100);if(nv>=100&&stage<stages.length-1){setStage(s=>s+1);return 20}return nv});};
+return(<PageWrapper>
+<div className="max-w-5xl mx-auto px-6 py-16">
+<SectionTitle title="陨石培育舱" sub="用星星能量喂养你的陨石生命体"/>
+<div className="grid md:grid-cols-[1fr_300px] gap-8">
+<div className="flex flex-col items-center">
+{/* 中央陨石 */}
+<div className="relative w-72 h-72 flex items-center justify-center mb-8">
+<div className="orbit w-full h-full opacity-30"/>
+<div className="orbit w-56 h-56 opacity-20" style={{animationDuration:'12s',animationDirection:'reverse'}}/>
+<div className="orbit w-40 h-40 opacity-10" style={{animationDuration:'8s'}}/>
+<div className="absolute inset-0 flex items-center justify-center">
+<MeteorOrb size={140} colors={stageColors[stage]}/>
+</div></div>
+<p className="text-lg font-bold text-cyan-300">{stages[stage]}</p>
+<p className="text-xs text-indigo-400 mt-1">阶段 {stage+1}/{stages.length}</p>
+{/* 成长进度 */}
+<div className="w-full max-w-md mt-6"><EnergyBar value={energy}/></div>
+{/* 成长阶段预览 */}
+<div className="flex gap-3 mt-8">{stages.map((s,i)=>(
+<div key={i} className={`text-center ${i<=stage?'opacity-100':'opacity-30'}`}>
+<div className={`w-10 h-10 rounded-full bg-gradient-to-br ${stageColors[i]} mx-auto ${i===stage?'ring-2 ring-cyan-400 ring-offset-2 ring-offset-space-950':''}`}/>
+<p className="text-[10px] mt-1 text-indigo-300">{s}</p></div>))}</div>
+</div>
+{/* 右侧面板 */}
+<div className="space-y-4">
+<div className="glass-card p-5">
+<h3 className="text-sm font-bold text-cyan-300 mb-3">⚡ 喂养行为</h3>
+<div className="space-y-2">
+<button onClick={feed} className="w-full btn-outline text-xs py-3">🌟 注入星星能量</button>
+<button onClick={()=>onNavigate('quiz')} className="w-full glass-card p-3 text-xs text-left hover:border-cyan-400/40 cursor-pointer">📝 去答题获取能量</button>
+<button onClick={()=>onNavigate('notes')} className="w-full glass-card p-3 text-xs text-left hover:border-cyan-400/40 cursor-pointer">🔭 上传观星笔记</button>
+<button onClick={()=>onNavigate('activities')} className="w-full glass-card p-3 text-xs text-left hover:border-cyan-400/40 cursor-pointer">🎪 参与社群活动</button>
+</div></div>
+<div className="glass-card p-5">
+<h3 className="text-sm font-bold text-indigo-300 mb-3">🌿 技能树</h3>
+{skills.map(s=>(
+<div key={s.name} className="mb-3">
+<div className="flex justify-between text-xs mb-1"><span>{s.name}</span><span className="text-cyan-300">Lv.{s.lv}/{s.max}</span></div>
+<div className="h-1.5 bg-space-950 rounded-full overflow-hidden"><div className="h-full bg-gradient-to-r from-indigo-500 to-cyan-400" style={{width:`${(s.lv/s.max)*100}%`}}/></div>
+</div>))}
+</div>
+<div className="glass-card p-5">
+<h3 className="text-sm font-bold text-indigo-300 mb-2">✨ 稀有度</h3>
+<div className="flex gap-1">{[1,2,3,4,5].map(i=><span key={i} className={`text-lg ${i<=stage+1?'text-yellow-400':'text-gray-600'}`}>★</span>)}</div>
+</div></div></div></div>
+</PageWrapper>)}
+
+// 7. 答题页
+function QuizPage({onNavigate}){
+const [qi,setQi]=useState(0);const [score,setScore]=useState(0);const [chosen,setChosen]=useState(null);const [streak,setStreak]=useState(0);
+const q=MOCK_QUIZ[qi];
+const answer=(i)=>{setChosen(i);if(i===q.ans){setScore(s=>s+20);setStreak(s=>s+1)}else{setStreak(0)}
+setTimeout(()=>{setChosen(null);setQi(x=>(x+1)%MOCK_QUIZ.length)},1200)};
+return(<PageWrapper>
+<div className="max-w-2xl mx-auto px-6 py-16">
+<div className="flex items-center justify-between mb-8">
+<SectionTitle title="天文知识挑战" sub={`第 ${qi+1} 题 / 共 ${MOCK_QUIZ.length} 题`}/>
+<div className="text-right"><div className="text-xs text-indigo-400">得分</div><div className="text-2xl font-bold text-cyan-300">{score}</div>
+{streak>=2&&<div className="text-xs text-amber-400 mt-1">🔥 连续答对 {streak}</div>}</div></div>
+<div className="glass-card p-8">
+<div className="flex items-center gap-3 mb-6"><MeteorOrb size={40} animate={false}/><span className="text-xs text-indigo-400">正在喂养：星陨·织梦者</span></div>
+<h3 className="text-xl font-bold mb-6">{q.q}</h3>
+<div className="space-y-3">{q.opts.map((o,i)=>{
+let cls='glass-card p-4 cursor-pointer text-sm transition-all ';
+if(chosen!==null){if(i===q.ans)cls+='border-green-400 bg-green-400/10 text-green-300';else if(i===chosen)cls+='border-red-400 bg-red-400/10 text-red-300';else cls+='opacity-40'}
+else cls+='hover:border-cyan-400/40';
+return <button key={i} onClick={()=>chosen===null&&answer(i)} className={cls}>{o}</button>})}</div>
+{chosen!==null&&<div className={`mt-4 text-sm text-center ${chosen===q.ans?'text-green-300':'text-red-300'}`}>{chosen===q.ans?'✨ 正确！+20 星星能量':'💫 加油，下次一定！'}</div>}
+</div></div>
+</PageWrapper>)}
+
+// 8. 观星笔记页
+function NotesPage(){
+const [notes]=useState([{user:'银河猎人',text:'今晚在山顶看到了银河全景，猎户座格外清晰。',place:'云南大理',weather:'☀ 晴朗',stars:'猎户座,天狼星'},{user:'星尘收集者',text:'城市灯光下依然找到了北斗七星。',place:'上海外滩',weather:'🌙 多云',stars:'北斗七星'}]);
+return(<PageWrapper>
+<div className="max-w-4xl mx-auto px-6 py-16">
+<SectionTitle title="观星笔记" sub="记录星空，喂养灵感"/>
+{/* 创作区 */}
+<div className="glass-card p-8 mb-10">
+<h3 className="font-bold text-cyan-300 mb-4">✍️ 写一篇观星笔记</h3>
+<textarea placeholder="今夜的星空如何？写下你的感受..." className="w-full bg-space-950 border border-indigo-500/30 rounded-xl p-4 h-28 resize-none focus:border-cyan-400 focus:outline-none text-sm mb-4"/>
+<div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+<div className="border-2 border-dashed border-indigo-500/30 rounded-xl p-6 text-center cursor-pointer hover:border-cyan-400/40 transition-colors"><span className="text-2xl">📷</span><p className="text-xs text-indigo-400 mt-1">上传照片</p></div>
+<select className="bg-space-950 border border-indigo-500/30 rounded-xl px-3 py-2 text-sm text-white"><option>选择观星地点</option><option>城市阳台</option><option>郊外山顶</option><option>海边</option><option>沙漠</option></select>
+<select className="bg-space-950 border border-indigo-500/30 rounded-xl px-3 py-2 text-sm text-white"><option>天气状态</option><option>☀ 晴朗</option><option>🌙 多云</option><option>⭐ 万里无云</option></select>
+<input placeholder="看到的星座/行星" className="bg-space-950 border border-indigo-500/30 rounded-xl px-3 py-2 text-sm"/>
+</div>
+<button className="btn-primary text-sm">发布并获取星星能量 +15 ⭐</button></div>
+{/* 已有笔记 */}
+<h3 className="font-bold text-indigo-300 mb-4">🌌 社区精选笔记</h3>
+<div className="grid md:grid-cols-2 gap-4">{notes.map((n,i)=>(
+<div key={i} className="glass-card p-5">
+<div className="flex items-center gap-2 mb-3"><div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500"/><span className="font-bold text-sm">{n.user}</span></div>
+<p className="text-sm text-indigo-200 mb-3">{n.text}</p>
+<div className="flex gap-2 flex-wrap text-xs"><span className="tag">📍 {n.place}</span><span className="tag">{n.weather}</span>{n.stars.split(',').map(s=><span key={s} className="tag">⭐ {s}</span>)}</div>
+</div>))}</div>
+</div></PageWrapper>)}
+
+// 9. 社群活动页
+function ActivitiesPage(){return(<PageWrapper>
+<div className="max-w-5xl mx-auto px-6 py-16">
+<SectionTitle title="星际活动" sub="参与活动，赢取限定奖励"/>
+<div className="grid md:grid-cols-2 gap-6">{MOCK_ACTIVITIES.map((a,i)=>(
+<div key={i} className="glass-card p-6 flex flex-col">
+<div className="flex items-start justify-between mb-3">
+<h3 className="font-bold text-lg">{a.title}</h3>
+<span className={`tag text-xs ${a.status==='进行中'?'border-green-400 text-green-300':a.status==='报名中'?'border-cyan-400 text-cyan-300':'border-amber-400 text-amber-300'}`}>{a.status}</span></div>
+<p className="text-sm text-indigo-300 flex-1 mb-4">{a.desc}</p>
+<div className="flex justify-between items-center">
+<div className="text-xs"><span className="text-cyan-300">{a.reward}</span><span className="text-indigo-500 ml-3">👥 {a.participants}人参与</span></div>
+<button className="btn-outline text-xs px-4 py-2">{a.status==='进行中'?'立即参与':'报名'}</button>
+</div></div>))}</div></div>
+</PageWrapper>)}
+
+// 10. 陨石互动页
+function InteractPage(){
+const [msgs,setMsgs]=useState([
+{from:'meteor',text:'主人，今天的宇宙温度很适合发呆呢～ 我在你的星轨上画了一颗小花 🌸'},
+{from:'user',text:'今天感觉有点累'},
+{from:'meteor',text:'感知到你的能量波动微弱了一些... 别担心，我正在为你收集北极星附近的宁静粒子。建议今晚早点休息，明天你会感受到来自天琴座的温暖能量波 ✨'}]);
+const [input,setInput]=useState('');
+const send=()=>{if(!input.trim())return;setMsgs(m=>[...m,{from:'user',text:input}]);setInput('');
+setTimeout(()=>{setMsgs(m=>[...m,{from:'meteor',text:'收到了你的星语信号～ 让我翻翻宇宙手册... 嗯，根据今天的星宿走向，这正是积蓄能量的好时机。相信自己，你比你想象的更接近那颗星 🌟'}])},1200)};
+return(<PageWrapper>
+<div className="max-w-6xl mx-auto px-6 py-16">
+<SectionTitle title="陨石互动" sub="与你的陨石生命体对话"/>
+<div className="grid md:grid-cols-[1fr_320px] gap-6">
+{/* 聊天区 */}
+<div className="glass-card p-6 flex flex-col" style={{minHeight:'500px'}}>
+<div className="flex-1 space-y-4 overflow-y-auto mb-4">{msgs.map((m,i)=>(
+<div key={i} className={`flex ${m.from==='user'?'justify-end':'justify-start'}`}>
+<div className={`max-w-[80%] p-4 rounded-2xl text-sm ${m.from==='user'?'bg-nebula-purple/30 rounded-br-sm':'bg-space-800 border border-indigo-500/20 rounded-bl-sm'}`}>
+{m.from==='meteor'&&<span className="text-xs text-cyan-400 block mb-1">🌠 星陨·织梦者</span>}
+{m.text}</div></div>))}</div>
+<div className="flex gap-2">
+<input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder="对你的陨石说点什么..." className="flex-1 bg-space-950 border border-indigo-500/30 rounded-xl px-4 py-3 text-sm focus:border-cyan-400 focus:outline-none"/>
+<button onClick={send} className="btn-primary px-6 text-sm">发送</button></div></div>
+{/* 状态面板 */}
+<div className="space-y-4">
+<div className="glass-card p-5 text-center"><MeteorOrb size={80}/><p className="font-bold mt-3">星陨·织梦者</p></div>
+{[{label:'今日状态',value:'✨ 灵感充沛',color:'text-cyan-300'},{label:'情绪波动',value:'🌊 平静如湖',color:'text-blue-300'},{label:'宇宙温度',value:'🌡 温暖宜人',color:'text-amber-300'},{label:'能量水平',value:'⚡ 72/100',color:'text-green-300'},{label:'今日幸运方向',value:'🧭 东北方·天琴座域',color:'text-pink-300'},{label:'对主人的建议',value:'💭 今天适合创造性活动',color:'text-violet-300'},{label:'星宿走向',value:'🌀 内省→表达→治愈',color:'text-indigo-300'}].map((s,i)=>(
+<div key={i} className="glass-card p-4"><div className="text-xs text-indigo-400">{s.label}</div><div className={`text-sm font-bold mt-1 ${s.color}`}>{s.value}</div></div>))}
+</div></div></div>
+</PageWrapper>)}
+
+// 11. 社区广场页
+function CommunityPage({onNavigate}){
+const [tab,setTab]=useState('热门');
+const tabs=['热门','最新','稀有','笔记'];
+const filtered=tab==='笔记'?MOCK_COMMUNITY.slice(0,4):MOCK_COMMUNITY.filter(c=>tab==='热门'?c.type==='热门':tab==='最新'?c.type==='最新':c.type==='稀有');
+return(<PageWrapper>
+<div className="max-w-6xl mx-auto px-6 py-16">
+<SectionTitle title="星际广场" sub="探索来自不同宇宙角落的陨石生命体"/>
+<div className="flex gap-2 justify-center mb-8">{tabs.map(t=>(
+<button key={t} onClick={()=>setTab(t)} className={`px-5 py-2 rounded-full text-sm transition-all ${tab===t?'bg-nebula-purple/30 text-cyan-300 border border-cyan-400/30':'text-indigo-400 hover:text-white'}`}>{t==='热门'?'🔥':''}
+{t==='最新'?'🆕':''}{t==='稀有'?'💎':''}{t==='笔记'?'📓':''} {t}榜</button>))}</div>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6">{(tab==='笔记'?MOCK_COMMUNITY.slice(0,4):filtered).map((c,i)=>(
+<div key={i} className="glass-card p-6 cursor-pointer" onClick={()=>onNavigate('gallery')}>
+<div className="flex justify-center mb-4"><MeteorOrb size={80} colors={GRADIENTS[i%GRADIENTS.length]} animate={false}/></div>
+<h3 className="font-bold text-center">{c.meteor}</h3>
+<div className="flex justify-between items-center mt-3 text-xs">
+<div className="flex items-center gap-2"><div className="w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500"/><span className="text-indigo-300">{c.user}</span></div>
+<div className="flex items-center gap-3"><span className={`tag ${c.rarity==='传说'?'border-amber-400 text-amber-300':c.rarity==='稀有'?'border-purple-400 text-purple-300':'border-gray-500 text-gray-400'}`}>{c.rarity}</span>
+<span className="text-indigo-400">❤ {c.likes}</span></div></div></div>))}</div></div>
+</PageWrapper>)}
+
+// 12. 展馆详情页
+function GalleryPage({onNavigate}){
+const [comment,setComment]=useState('');
+const [comments,setComments]=useState([{user:'宇宙旅人A',text:'这颗陨石好美！'},{user:'银河画师',text:'希望我的也能进化到这个形态～'}]);
+return(<PageWrapper>
+<div className="max-w-5xl mx-auto px-6 py-16">
+{/* 大图展示 */}
+<div className="glass-card p-10 mb-8 text-center relative overflow-hidden">
+<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.1),transparent)]"/>
+<div className="relative z-10">
+<MeteorOrb size={200} colors="from-violet-500 via-fuchsia-500 to-pink-500"/>
+<h1 className="mt-6 text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-pink-300">星陨·暗影</h1>
+<p className="text-indigo-400 text-sm mt-1">MTR-2026-ZX1203 · 猎户座之子</p>
+<div className="flex gap-2 justify-center mt-3"><span className="tag border-amber-400 text-amber-300">传说</span><span className="tag">INTJ</span><span className="tag">天蝎座</span></div>
+</div></div>
+<div className="grid md:grid-cols-2 gap-6">
+<div className="space-y-4">
+<div className="glass-card p-6"><h3 className="text-sm text-indigo-400 mb-2">📖 角色故事</h3>
+<p className="text-sm text-indigo-200 leading-relaxed">诞生于猎户座最深处的暗星域，这颗陨石天生拥有穿透黑暗的能力。沉默寡言但内心深处燃烧着改变宇宙的野心。它的暗影并非来自黑暗，而是浓缩了太多星光后的深邃。</p></div>
+<div className="glass-card p-6"><h3 className="text-sm text-indigo-400 mb-2">🌿 成长阶段</h3>
+<div className="flex gap-2">{['胚芽','星核','星云','恒星'].map((s,i)=>(
+<div key={i} className={`flex-1 text-center ${i<=2?'':'opacity-30'}`}><div className={`w-8 h-8 mx-auto rounded-full ${i<=2?'bg-gradient-to-br from-violet-500 to-fuchsia-500':'bg-gray-700'}`}/><p className="text-[10px] mt-1">{s}</p></div>))}</div></div>
+<div className="glass-card p-6"><h3 className="text-sm text-indigo-400 mb-2">⚡ 技能</h3>
+<div className="flex gap-2 flex-wrap"><span className="tag text-cyan-300">暗影穿梭 Lv.3</span><span className="tag text-cyan-300">星轨预言 Lv.2</span><span className="tag text-cyan-300">引力操控 Lv.2</span></div></div>
+<div className="glass-card p-6"><h3 className="text-sm text-indigo-400 mb-2">🔭 主人的观星笔记</h3>
+<p className="text-sm text-indigo-200">"今夜猎户座格外明亮，我仿佛听到了暗影在低语..."</p></div>
+</div>
+<div className="space-y-4">
+<div className="glass-card p-6"><h3 className="text-sm text-indigo-400 mb-2">🌐 宇宙关系图谱</h3>
+<div className="flex flex-col items-center py-4 space-y-2">
+<div className="glass-card px-4 py-2 text-xs">猎户座之子（主人）</div>
+<div className="text-indigo-500">↕ 羁绊值 89</div>
+<MeteorOrb size={50} colors="from-violet-500 to-fuchsia-500" animate={false}/>
+<div className="text-indigo-500">↕</div>
+<div className="flex gap-4">{['星陨·烈焰','星陨·幽蓝'].map(n=><div key={n} className="glass-card px-3 py-1 text-xs">{n}</div>)}</div>
+<p className="text-[10px] text-indigo-500 mt-1">宇宙邻居</p></div></div>
+{/* 留言区 */}
+<div className="glass-card p-6">
+<h3 className="text-sm text-indigo-400 mb-3">💬 访客留言 ({comments.length})</h3>
+<div className="space-y-3 mb-4 max-h-48 overflow-y-auto">{comments.map((c,i)=>(
+<div key={i} className="bg-space-950/50 p-3 rounded-lg text-xs"><span className="text-cyan-300 font-bold">{c.user}：</span><span className="text-indigo-200">{c.text}</span></div>))}</div>
+<div className="flex gap-2">
+<input value={comment} onChange={e=>setComment(e.target.value)} placeholder="留下你的星语..." className="flex-1 bg-space-950 border border-indigo-500/30 rounded-lg px-3 py-2 text-xs focus:border-cyan-400 focus:outline-none"/>
+<button onClick={()=>{if(comment.trim()){setComments(c=>[...c,{user:'我',text:comment}]);setComment('')}}} className="btn-outline text-xs px-4 py-2">发送</button>
+</div></div></div></div>
+<button onClick={()=>onNavigate('community')} className="mt-8 text-sm text-indigo-400 hover:text-cyan-300 transition-colors">← 返回星际广场</button>
+</div></PageWrapper>)}
+
+
+// ========== 主应用 ==========
+function App(){
+const [page,setPage]=useState('home');
+const navigate=(p)=>{setPage(p);window.scrollTo({top:0,behavior:'smooth'})};
+return(<>
+<Navbar current={page} onNavigate={navigate}/>
+{page==='home'&&<HomePage onNavigate={navigate}/>}
+{page==='create'&&<CreatePage onNavigate={navigate}/>}
+{page==='generating'&&<GeneratingPage onNavigate={navigate}/>}
+{page==='result'&&<ResultPage onNavigate={navigate}/>}
+{page==='archive'&&<ArchivePage onNavigate={navigate}/>}
+{page==='cultivate'&&<CultivatePage onNavigate={navigate}/>}
+{page==='quiz'&&<QuizPage onNavigate={navigate}/>}
+{page==='notes'&&<NotesPage/>}
+{page==='activities'&&<ActivitiesPage/>}
+{page==='interact'&&<InteractPage/>}
+{page==='community'&&<CommunityPage onNavigate={navigate}/>}
+{page==='gallery'&&<GalleryPage onNavigate={navigate}/>}
+</>)}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App/>);
+</script>
+</body>
+</html>
