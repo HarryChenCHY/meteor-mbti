@@ -49,6 +49,60 @@ body{background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(99,102,241,0.12
 .marquee-track{display:flex;gap:3rem;white-space:nowrap;animation:marquee 32s linear infinite;width:max-content}
 .map-pulse{animation:mapPulse 1.6s ease-out infinite}
 @keyframes mapPulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.6);opacity:0}}
+/* ===== 首页主标题：科幻高亮 + 流星划过 ===== */
+.hero-title-wrap{position:relative;display:inline-block;padding:.08em .12em;isolation:isolate;overflow:visible}
+.hero-title{
+position:relative;z-index:2;display:block;
+font-weight:900;letter-spacing:.12em;
+background:linear-gradient(100deg,
+#f0fdfa 0%,
+#67e8f9 8%,
+#a5f3fc 18%,
+#c4b5fd 38%,
+#e879f9 50%,
+#7dd3fc 62%,
+#c4b5fd 78%,
+#22d3ee 92%,
+#ecfeff 100%);
+background-size:220% 100%;
+-webkit-background-clip:text;background-clip:text;color:transparent;
+-webkit-text-fill-color:transparent;
+filter:drop-shadow(0 0 18px rgba(34,211,238,.55)) drop-shadow(0 0 36px rgba(139,92,246,.4)) drop-shadow(0 2px 0 rgba(15,23,42,.85));
+animation:heroTitleAurora 6s ease-in-out infinite,heroTitleMicro 4.5s ease-in-out infinite
+}
+@keyframes heroTitleAurora{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes heroTitleMicro{0%,100%{filter:drop-shadow(0 0 14px rgba(34,211,238,.45)) drop-shadow(0 0 32px rgba(139,92,246,.3))}50%{filter:drop-shadow(0 0 26px rgba(34,211,238,.75)) drop-shadow(0 0 50px rgba(196,181,253,.5)) drop-shadow(0 2px 0 rgba(15,23,42,.85))}}
+/* 字后一层能量晕（不抢字） */
+.hero-title-wrap::before{
+content:'';position:absolute;inset:-8% -4% -10% -4%;
+background:radial-gradient(closest-side at 50% 45%,rgba(99,102,241,.2),rgba(34,211,238,.1) 35%,transparent 70%);
+z-index:0;pointer-events:none;animation:heroHaloBreathe 5s ease-in-out infinite;border-radius:4px
+}
+@keyframes heroHaloBreathe{0%,100%{opacity:.65;transform:scale(1)}50%{opacity:1;transform:scale(1.03)}}
+/* 流星尾迹 + 光核 */
+.hero-meteor{position:absolute;top:50%;left:0;z-index:3;width:42%;min-width:120px;height:2px;pointer-events:none;mix-blend-mode:screen;opacity:0;transform:translate3d(-120%,-50%,0) rotate(-6deg);transform-origin:0 50%;
+background:linear-gradient(90deg,transparent 0%,rgba(99,102,241,.2) 25%,rgba(255,255,255,.95) 50%,#22d3ee 60%,rgba(34,211,238,.3) 85%,transparent 100%);
+border-radius:2px;box-shadow:0 0 10px 2px rgba(255,255,255,.9),0 0 20px 6px rgba(34,211,238,.5),-16px 0 24px 4px rgba(99,102,241,.3);
+animation:heroMeteorSweep 3.4s cubic-bezier(.2,.8,.2,1) infinite
+}
+.hero-meteor::after{content:'';position:absolute;right:-1px;top:50%;width:5px;height:5px;transform:translate(50%,-50%);background:#fff;border-radius:50%;box-shadow:0 0 12px 3px #fff,0 0 24px 6px #22d3ee}
+/* 次流星：更细、略低、错开节奏 */
+.hero-meteor--b{position:absolute;left:0;z-index:3;top:70%;width:32%;min-width:72px;height:1px;pointer-events:none;mix-blend-mode:screen;opacity:0;transform:translate3d(-120%,-50%,0) rotate(-9deg);transform-origin:0 50%;
+background:linear-gradient(90deg,transparent 0%,rgba(99,102,241,.12) 30%,rgba(255,255,255,.75) 50%,#a5f3fc 65%,transparent 100%);
+box-shadow:0 0 8px 1px rgba(255,255,255,.6),0 0 16px 4px rgba(165,243,252,.45);
+border-radius:2px;animation:heroMeteorSweep2 3.2s ease-in 1.35s infinite}
+.hero-meteor--b::after{content:'';position:absolute;right:-1px;top:50%;width:3px;height:3px;transform:translate(50%,-50%);background:#e0f2fe;border-radius:50%;box-shadow:0 0 8px 2px #a5f3fc,0 0 14px 3px #22d3ee}
+@media (max-width:639px){
+.hero-meteor{min-width:90px}
+.hero-meteor--b{min-width:60px}
+}
+@keyframes heroMeteorSweep{0%{opacity:0;transform:translate3d(-30%,-50%,0) rotate(-6deg)}3%{opacity:1}55%{transform:translate3d(200%,-50%,0) rotate(-6deg);opacity:1}60%{opacity:0}100%{opacity:0;transform:translate3d(200%,-50%,0) rotate(-6deg)}}
+@keyframes heroMeteorSweep2{0%{opacity:0;transform:translate3d(-20%,-50%,0) rotate(-9deg)}3%{opacity:.9}50%{transform:translate3d(200%,-50%,0) rotate(-9deg);opacity:.9}55%{opacity:0}100%{opacity:0;transform:translate3d(200%,-50%,0) rotate(-9deg)}}
+@media (prefers-reduced-motion:reduce){
+.hero-title,.hero-meteor,.hero-meteor--b,.hero-title-wrap::before{animation:none!important}
+.hero-meteor,.hero-meteor--b{opacity:0!important;visibility:hidden}
+.hero-title{filter:drop-shadow(0 0 8px rgba(34,211,238,.35))!important;background-position:50% 50%!important}
+}
 </style>
 </head>
 <body>
@@ -359,8 +413,12 @@ return(<PageWrapper>
 <div className="orbit w-[400px] h-[400px] opacity-15" style={{top:'20%',right:'-5%',animationDuration:'15s'}}/>
 <div className="relative z-10 fade-in">
 <div className="mb-6 sm:mb-8 flex justify-center scale-[0.85] sm:scale-100"><MeteorOrb size={120}/></div>
-<h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-tight neon-title px-1">
-<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-fuchsia-200 to-indigo-200">星陨人格宇宙</span>
+<h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-tight px-1 mx-auto">
+<span className="hero-title-wrap">
+<span className="hero-title">星陨人格宇宙</span>
+<span className="hero-meteor" aria-hidden="true"/>
+<span className="hero-meteor--b" aria-hidden="true"/>
+</span>
 </h1>
 <p className="text-lg text-indigo-300/80 mt-2 tracking-widest">METEOR MBTI UNIVERSE</p>
 <p className="mt-6 text-lg md:text-xl text-indigo-200 max-w-2xl mx-auto leading-relaxed">
