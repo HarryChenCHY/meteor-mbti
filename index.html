@@ -45,10 +45,6 @@ body{background:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(99,102,241,0.12
 @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .page-enter{animation:pageEnter .5s ease forwards}
 @keyframes pageEnter{from{opacity:0;transform:scale(0.97)}to{opacity:1;transform:scale(1)}}
-@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.marquee-track{display:flex;gap:3rem;white-space:nowrap;animation:marquee 32s linear infinite;width:max-content}
-.map-pulse{animation:mapPulse 1.6s ease-out infinite}
-@keyframes mapPulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.6);opacity:0}}
 /* ===== 首页主标题：科幻高亮 + 流星划过 ===== */
 .hero-title-wrap{position:relative;display:inline-block;padding:.08em .12em;isolation:isolate;overflow:visible}
 .hero-title{
@@ -72,21 +68,18 @@ animation:heroTitleAurora 6s ease-in-out infinite,heroTitleMicro 4.5s ease-in-ou
 }
 @keyframes heroTitleAurora{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 @keyframes heroTitleMicro{0%,100%{filter:drop-shadow(0 0 14px rgba(34,211,238,.45)) drop-shadow(0 0 32px rgba(139,92,246,.3))}50%{filter:drop-shadow(0 0 26px rgba(34,211,238,.75)) drop-shadow(0 0 50px rgba(196,181,253,.5)) drop-shadow(0 2px 0 rgba(15,23,42,.85))}}
-/* 字后一层能量晕（不抢字） */
 .hero-title-wrap::before{
 content:'';position:absolute;inset:-8% -4% -10% -4%;
 background:radial-gradient(closest-side at 50% 45%,rgba(99,102,241,.2),rgba(34,211,238,.1) 35%,transparent 70%);
 z-index:0;pointer-events:none;animation:heroHaloBreathe 5s ease-in-out infinite;border-radius:4px
 }
 @keyframes heroHaloBreathe{0%,100%{opacity:.65;transform:scale(1)}50%{opacity:1;transform:scale(1.03)}}
-/* 流星尾迹 + 光核 */
 .hero-meteor{position:absolute;top:50%;left:0;z-index:3;width:42%;min-width:120px;height:2px;pointer-events:none;mix-blend-mode:screen;opacity:0;transform:translate3d(-120%,-50%,0) rotate(-6deg);transform-origin:0 50%;
 background:linear-gradient(90deg,transparent 0%,rgba(99,102,241,.2) 25%,rgba(255,255,255,.95) 50%,#22d3ee 60%,rgba(34,211,238,.3) 85%,transparent 100%);
 border-radius:2px;box-shadow:0 0 10px 2px rgba(255,255,255,.9),0 0 20px 6px rgba(34,211,238,.5),-16px 0 24px 4px rgba(99,102,241,.3);
 animation:heroMeteorSweep 3.4s cubic-bezier(.2,.8,.2,1) infinite
 }
 .hero-meteor::after{content:'';position:absolute;right:-1px;top:50%;width:5px;height:5px;transform:translate(50%,-50%);background:#fff;border-radius:50%;box-shadow:0 0 12px 3px #fff,0 0 24px 6px #22d3ee}
-/* 次流星：更细、略低、错开节奏 */
 .hero-meteor--b{position:absolute;left:0;z-index:3;top:70%;width:32%;min-width:72px;height:1px;pointer-events:none;mix-blend-mode:screen;opacity:0;transform:translate3d(-120%,-50%,0) rotate(-9deg);transform-origin:0 50%;
 background:linear-gradient(90deg,transparent 0%,rgba(99,102,241,.12) 30%,rgba(255,255,255,.75) 50%,#a5f3fc 65%,transparent 100%);
 box-shadow:0 0 8px 1px rgba(255,255,255,.6),0 0 16px 4px rgba(165,243,252,.45);
@@ -125,14 +118,12 @@ let stars=[];const N=200;
 function resize(){c.width=window.innerWidth;c.height=window.innerHeight;init()}
 function init(){stars=[];for(let i=0;i<N;i++)stars.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.5+0.3,a:Math.random(),da:Math.random()*0.02-0.01,speed:Math.random()*0.3+0.05})}
 function draw(){ctx.clearRect(0,0,c.width,c.height);
-// 星云背景光晕
 let g1=ctx.createRadialGradient(c.width*0.3,c.height*0.4,0,c.width*0.3,c.height*0.4,c.width*0.5);
 g1.addColorStop(0,'rgba(99,102,241,0.05)');g1.addColorStop(1,'transparent');ctx.fillStyle=g1;ctx.fillRect(0,0,c.width,c.height);
 let g2=ctx.createRadialGradient(c.width*0.7,c.height*0.6,0,c.width*0.7,c.height*0.6,c.width*0.4);
 g2.addColorStop(0,'rgba(217,70,239,0.03)');g2.addColorStop(1,'transparent');ctx.fillStyle=g2;ctx.fillRect(0,0,c.width,c.height);
 stars.forEach(s=>{s.a+=s.da;if(s.a>1||s.a<0.2)s.da*=-1;s.y-=s.speed;if(s.y<-5){s.y=c.height+5;s.x=Math.random()*c.width}
 ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(200,210,255,${s.a})`;ctx.fill()});
-// 偶尔流星
 if(Math.random()<0.002){let mx=Math.random()*c.width,my=0;ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx+80,my+80);
 let sg=ctx.createLinearGradient(mx,my,mx+80,my+80);sg.addColorStop(0,'rgba(34,211,238,0.8)');sg.addColorStop(1,'transparent');ctx.strokeStyle=sg;ctx.lineWidth=1.5;ctx.stroke()}
 requestAnimationFrame(draw)}
@@ -147,7 +138,7 @@ window.addEventListener('resize',resize);resize();draw()
 <script type="text/babel">
 const {useState,useEffect,useRef,useCallback}=React;
 
-// ========== 假数据 ==========
+// ========== 数据 ==========
 const MBTI_LIST=['INTJ-建筑师','INTP-逻辑学家','ENTJ-指挥官','ENTP-辩论家','INFJ-提倡者','INFP-调停者','ENFJ-主人公','ENFP-竞选者','ISTJ-物流师','ISFJ-守卫者','ESTJ-总经理','ESFJ-执政官','ISTP-鉴赏家','ISFP-探险家','ESTP-企业家','ESFP-表演者'];
 const SIGNS=['白羊座','金牛座','双子座','巨蟹座','狮子座','处女座','天秤座','天蝎座','射手座','摩羯座','水瓶座','双鱼座'];
 const BLOODS=['A型','B型','O型','AB型'];
@@ -163,102 +154,48 @@ trajectory:['梦境星云→','星尘走廊→','织女星域→','你的身边'
 broadcast:'今日宇宙播报：织女星域气温宜人，适合冥想与创作。你的陨石正在吸收来自天琴座的灵感粒子，创造力+15%。',
 future:'近期宇宙能量暗示你将遇到一个志同道合的灵魂。保持开放的心态，星光会为你指引方向。'};
 
-const MOCK_ARCHIVE={nickname:'星尘旅人',avatar:'🌙',meteorName:'星陨·织梦者',energy:62,level:'初始期',
+const MOCK_ARCHIVE={nickname:'星尘旅人',avatar:'🌙',meteorName:'星陨·织梦者',
 skills:[{name:'星语感应',lv:2},{name:'梦境编织',lv:1},{name:'星尘护盾',lv:1}],
 timeline:[{date:'2026-03-20',event:'陨石诞生于梦境星云'},{date:'2026-03-22',event:'首次星语感应成功'},{date:'2026-03-25',event:'完成3次天文答题，星尘护盾觉醒'}],
-recentDivine:'今天适合仰望猎户座方向，灵感会在繁星间流淌。',notes:['在阳台看到了北斗七星','今夜银河清晰可见'],records:['与陨石聊了未来的旅行','查看了今日宇宙播报']};
+recentDivine:'今天适合仰望猎户座方向，灵感会在繁星间流淌。'};
 
 const MOCK_QUIZ=[
 {q:'太阳系中最大的行星是？',opts:['土星','木星','天王星','海王星'],ans:1},
 {q:'光从太阳到达地球大约需要多长时间？',opts:['8分钟','80分钟','8秒','8小时'],ans:0},
 {q:'银河系的直径大约是多少光年？',opts:['1万','10万','100万','1000万'],ans:1},
 {q:'以下哪颗不是太阳系的行星？',opts:['水星','冥王星','金星','火星'],ans:1},
-{q:'北极星属于哪个星座？',opts:['北斗座','小熊座','大熊座','仙后座'],ans:1}];
+{q:'北极星属于哪个星座？',opts:['北斗座','小熊座','大熊座','仙后座'],ans:1},
+{q:'哈勃望远镜以哪位天文学家命名？',opts:['伽利略','哈勃','开普勒','牛顿'],ans:1},
+{q:'太阳系中距离太阳最近的行星是？',opts:['金星','水星','火星','地球'],ans:1},
+{q:'月球绕地球公转一周大约需要多少天？',opts:['7天','14天','27天','30天'],ans:2}];
 
-const OFFLINE_NOTICES=[
-{type:'重磅',cls:'border-cyan-400 text-cyan-300',text:'🎉「28星宿 × 大天文家」双主题展即将开幕，限量1000份星宿勋章等你来集！'},
-{type:'活动',cls:'border-pink-400 text-pink-300',text:'⭐ 本周六晚 8 点 · 张衡浑天仪复刻工坊开放预约，前 30 名免费参与'},
-{type:'升级',cls:'border-amber-400 text-amber-300',text:'🌌 角宿展厅升级完成，新增 AR 虚拟星图沉浸体验'},
-{type:'优惠',cls:'border-green-400 text-green-300',text:'💫 凭 MBTI 铸造记录到场，可领取专属星宿主题徽章一枚'},
-{type:'提示',cls:'border-indigo-400 text-indigo-300',text:'🚇 推荐乘坐地铁 4 号线·星陨大道站 B 出口，步行 5 分钟即达'}];
+const SHOP_ITEMS=[
+{id:'S1',name:'星陨专属徽章',desc:'限量铸造的星陨宇宙金属徽章，附官方编号证书',cost:200,left:23,icon:'🏅',cat:'周边'},
+{id:'S2',name:'星图明信片套装',desc:'精选12张宇宙星图明信片，可寄送给好友',cost:150,left:67,icon:'📮',cat:'周边'},
+{id:'S3',name:'定制陨石笔记本',desc:'封面印有你的陨石名称与编号的定制笔记本',cost:300,left:18,icon:'📓',cat:'周边'},
+{id:'S4',name:'天文馆优先入场券',desc:'跳过排队直接进入展馆，有效期30天',cost:500,left:134,icon:'🎟️',cat:'特权'},
+{id:'S5',name:'天文讲座专属席位',desc:'下一期天文讲座前排席位，含茶歇',cost:600,left:7,icon:'🎓',cat:'特权'},
+{id:'S6',name:'望远镜一日租用券',desc:'专业天文望远镜租用权，含技术指导',cost:800,left:3,icon:'🔭',cat:'特权'},
+{id:'S7',name:'陨石真实样品',desc:'来自太阳系的真实陨石碎片，含鉴定证书',cost:1000,left:2,icon:'🪨',cat:'限定'},
+{id:'S8',name:'星陨角色手办',desc:'3D打印专属陨石角色手办，1:1精细还原',cost:1200,left:5,icon:'🌟',cat:'限定'}];
 
-const XING_XIU=[
-{dir:'东方青龙',color:'from-emerald-400 to-cyan-500',mansions:['角','亢','氐','房','心','尾','箕'],myth:'春之神兽，掌东方七宿，象征生机与新生'},
-{dir:'北方玄武',color:'from-indigo-500 to-violet-700',mansions:['斗','牛','女','虚','危','室','壁'],myth:'冬之神兽，龟蛇合体，象征智慧与永恒'},
-{dir:'西方白虎',color:'from-amber-300 to-yellow-600',mansions:['奎','娄','胃','昴','毕','觜','参'],myth:'秋之神兽，掌西方七宿，象征威严与守护'},
-{dir:'南方朱雀',color:'from-rose-400 to-red-600',mansions:['井','鬼','柳','星','张','翼','轸'],myth:'夏之神兽，火焰化形，象征光明与重生'}];
+const CAT_COLORS={'周边':'border-cyan-400/50 text-cyan-300','特权':'border-amber-400/50 text-amber-300','限定':'border-pink-400/50 text-pink-300'};
 
-const ASTRONOMERS=[
-{name:'张衡',era:'东汉·公元78年',contrib:'浑天仪 · 候风地动仪',quote:'人之贵贱，在乎修身',color:'from-amber-400 to-orange-600',avatar:'🪐'},
-{name:'祖冲之',era:'南朝·公元429年',contrib:'圆周率 π·大明历',quote:'数尽天地，理通古今',color:'from-cyan-400 to-blue-600',avatar:'📐'},
-{name:'郭守敬',era:'元朝·公元1231年',contrib:'授时历 · 简仪 · 高表',quote:'历之本，在于测验',color:'from-emerald-400 to-teal-600',avatar:'🌌'},
-{name:'哥白尼',era:'文艺复兴·1473年',contrib:'日心说 · 《天体运行论》',quote:'让我们仰望苍穹',color:'from-violet-500 to-purple-700',avatar:'☀️'},
-{name:'伽利略',era:'文艺复兴·1564年',contrib:'天文望远镜 · 木星卫星',quote:'然而，它仍在转动',color:'from-pink-400 to-rose-600',avatar:'🔭'},
-{name:'开普勒',era:'17世纪·1571年',contrib:'行星运动三大定律',quote:'数学是宇宙的语言',color:'from-indigo-400 to-blue-700',avatar:'🌠'},
-{name:'牛顿',era:'17世纪·1643年',contrib:'万有引力 · 《自然哲学原理》',quote:'我看得更远，因为站在巨人的肩上',color:'from-red-400 to-orange-700',avatar:'🍎'},
-{name:'哈勃',era:'近代·1889年',contrib:'宇宙膨胀 · 哈勃定律',quote:'装备好你的好奇心',color:'from-fuchsia-400 to-purple-700',avatar:'🌀'}];
+const STAGE_THRESHOLDS=[0,100,300,600,1000];
+const STAGES=['胚芽形态','星核形态','星云形态','恒星形态','超新星形态'];
+const STAGE_COLORS=['from-indigo-500 to-purple-600','from-cyan-400 to-blue-600','from-pink-500 to-purple-600','from-amber-400 to-orange-500','from-white to-cyan-300'];
 
-const OFFLINE_ACTIVITIES=[
-{id:'A1',theme:'28星宿',title:'青龙七宿·夜游观测之旅',date:'2026-05-04 19:30',venue:'A馆 · 东方展厅',cover:'from-emerald-400 to-cyan-500',desc:'跟随汉服礼仪师穿越东方青龙七宿，使用专业天文望远镜实地观测角宿一、心宿二，配合古星图讲解，铸造你的"青龙星宿"勋章。',reward:'+80 星星能量·青龙勋章',status:'报名中',quota:'80/120',price:'免费',signCode:'QING001',mapPin:'A1',distance:50,walk:'1 分钟'},
-{id:'A2',theme:'28星宿',title:'玄武七宿·北斗冥想夜',date:'2026-05-11 20:00',venue:'A馆 · 北方展厅',cover:'from-indigo-500 to-violet-700',desc:'在静谧的玄武展厅进行星宿冥想，听老师讲述北斗诸宿的神话，体验古代占星师的观测仪式。',reward:'+60 星星能量·玄武徽章',status:'进行中',quota:'45/60',price:'免费',signCode:'XUAN002',mapPin:'A2',distance:65,walk:'1 分钟'},
-{id:'A3',theme:'28星宿',title:'白虎七宿·秋夜星图工坊',date:'2026-05-18 15:00',venue:'A馆 · 西方展厅',cover:'from-amber-300 to-yellow-600',desc:'手绘属于自己的西方七宿星图，结合 MBTI 性格推算你的本命宿，制作 AR 动态星图带回家。',reward:'+100 能量·白虎工坊证书',status:'即将开始',quota:'12/40',price:'¥69 / 位',signCode:'BAI003',mapPin:'A3',distance:90,walk:'2 分钟'},
-{id:'A4',theme:'28星宿',title:'朱雀七宿·火焰之舞',date:'2026-05-25 19:00',venue:'A馆 · 南方展厅',cover:'from-rose-400 to-red-600',desc:'沉浸式光影演出，再现朱雀七宿守护南天的神话故事，演出后体验星宿主题餐饮。',reward:'+120 能量·朱雀火焰勋章',status:'报名中',quota:'30/100',price:'¥128 / 位',signCode:'ZHU004',mapPin:'A4',distance:105,walk:'2 分钟'},
-{id:'B1',theme:'大天文家',title:'张衡·浑天仪复刻工坊',date:'2026-05-05 10:00',venue:'B馆 · 中华天文厅',cover:'from-amber-400 to-orange-600',desc:'在 B 馆中华天文厅，亲手用黄铜与红木复刻迷你浑天仪，老师手把手教学，作品可带回家。',reward:'+150 能量·浑天仪模型',status:'报名中',quota:'8/30',price:'¥199 / 位',signCode:'ZHANG005',mapPin:'B1',distance:120,walk:'2-3 分钟'},
-{id:'B2',theme:'大天文家',title:'伽利略之夜·望远镜里的木星',date:'2026-05-12 21:00',venue:'B馆 · 西方天文厅',cover:'from-pink-400 to-rose-600',desc:'重现伽利略 1610 年首次观测木星四颗卫星的场景，使用复古望远镜实地观星。',reward:'+90 能量·伽利略勋章',status:'进行中',quota:'25/50',price:'免费',signCode:'GA006',mapPin:'B2',distance:140,walk:'3 分钟'},
-{id:'B3',theme:'大天文家',title:'哥白尼·日心说沉浸剧场',date:'2026-05-19 19:30',venue:'B馆 · 圆顶剧场',cover:'from-violet-500 to-purple-700',desc:'8K 球幕沉浸式剧场，跟随哥白尼穿越文艺复兴，亲历"日心说"的诞生时刻。',reward:'+100 能量·剧场票根',status:'报名中',quota:'56/180',price:'¥88 / 位',signCode:'COP007',mapPin:'B3',distance:160,walk:'3 分钟'},
-{id:'B4',theme:'大天文家',title:'牛顿·万有引力实验室',date:'2026-05-26 14:00',venue:'B馆 · 互动实验室',cover:'from-red-400 to-orange-700',desc:'通过苹果坠落、单摆、抛体等真实实验装置，亲身体验万有引力定律的发现历程。',reward:'+110 能量·牛顿实验徽章',status:'即将开始',quota:'5/40',price:'¥59 / 位',signCode:'NEW008',mapPin:'B4',distance:175,walk:'3-4 分钟'}];
+function getStage(energy){
+  for(let i=STAGE_THRESHOLDS.length-1;i>=0;i--){if(energy>=STAGE_THRESHOLDS[i])return Math.min(i,4)}return 0}
+function getStageProgress(energy){
+  const s=getStage(energy);if(s>=4)return 100;
+  return Math.round((energy-STAGE_THRESHOLDS[s])/(STAGE_THRESHOLDS[s+1]-STAGE_THRESHOLDS[s])*100)}
 
-const MOCK_COMMUNITY=[
-// === 传说 8 颗 ===
-{user:'猎户座之子',meteor:'星陨·暗影',mbti:'INTJ',sign:'天蝎座',rarity:'传说',likes:892,type:'热门',grad:'from-violet-700 via-purple-800 to-slate-950'},
-{user:'极光守望',meteor:'星陨·极光',mbti:'INFJ',sign:'水瓶座',rarity:'传说',likes:756,type:'热门',grad:'from-emerald-300 via-cyan-400 to-purple-600'},
-{user:'深空漫步者',meteor:'星陨·幽蓝',mbti:'INTP',sign:'双鱼座',rarity:'传说',likes:689,type:'热门',grad:'from-blue-600 via-indigo-700 to-violet-900'},
-{user:'凤凰涅槃',meteor:'星陨·凤凰',mbti:'ENFJ',sign:'狮子座',rarity:'传说',likes:921,type:'热门',grad:'from-yellow-300 via-orange-500 to-rose-700'},
-{user:'紫微守夜',meteor:'星陨·神龙',mbti:'ENTJ',sign:'摩羯座',rarity:'传说',likes:830,type:'最新',grad:'from-amber-300 via-yellow-500 to-orange-700'},
-{user:'月海女王',meteor:'星陨·月神',mbti:'ISFJ',sign:'巨蟹座',rarity:'传说',likes:745,type:'最新',grad:'from-slate-200 via-blue-300 to-indigo-600'},
-{user:'量子诗人',meteor:'星陨·混沌',mbti:'INTP',sign:'双子座',rarity:'传说',likes:807,type:'热门',grad:'from-pink-400 via-violet-500 to-cyan-400'},
-{user:'银河织梦',meteor:'星陨·织星',mbti:'INFP',sign:'双鱼座',rarity:'传说',likes:712,type:'最新',grad:'from-fuchsia-400 via-purple-500 to-indigo-700'},
-// === 稀有 16 颗 ===
-{user:'银河猎人',meteor:'星陨·烈焰',mbti:'ENTJ',sign:'狮子座',rarity:'稀有',likes:412,type:'热门',grad:'from-orange-500 to-red-600'},
-{user:'宇宙画师',meteor:'星陨·虹光',mbti:'ENFP',sign:'天秤座',rarity:'稀有',likes:367,type:'热门',grad:'from-pink-400 via-yellow-300 to-cyan-400'},
-{user:'月光诗人',meteor:'星陨·柔光',mbti:'INFJ',sign:'巨蟹座',rarity:'稀有',likes:298,type:'热门',grad:'from-rose-300 to-pink-500'},
-{user:'织女星徒',meteor:'星陨·星河',mbti:'ENFP',sign:'水瓶座',rarity:'稀有',likes:312,type:'最新',grad:'from-indigo-500 via-purple-500 to-blue-600'},
-{user:'七星书生',meteor:'星陨·琉璃',mbti:'INTP',sign:'处女座',rarity:'稀有',likes:265,type:'最新',grad:'from-emerald-400 via-teal-400 to-cyan-500'},
-{user:'暗夜旅人',meteor:'星陨·夜莺',mbti:'INTJ',sign:'天蝎座',rarity:'稀有',likes:354,type:'热门',grad:'from-violet-700 to-fuchsia-900'},
-{user:'流星拾遗者',meteor:'星陨·朝霞',mbti:'ESFP',sign:'金牛座',rarity:'稀有',likes:241,type:'最新',grad:'from-orange-300 via-pink-400 to-rose-500'},
-{user:'雷霆使者',meteor:'星陨·雷霆',mbti:'ESTP',sign:'白羊座',rarity:'稀有',likes:289,type:'热门',grad:'from-violet-500 via-purple-600 to-yellow-300'},
-{user:'仙女座舞者',meteor:'星陨·寒霜',mbti:'ISTJ',sign:'摩羯座',rarity:'稀有',likes:198,type:'最新',grad:'from-cyan-200 via-blue-300 to-indigo-500'},
-{user:'引力歌手',meteor:'星陨·琥珀',mbti:'ENFJ',sign:'狮子座',rarity:'稀有',likes:271,type:'最新',grad:'from-amber-400 via-orange-500 to-yellow-600'},
-{user:'织梦者',meteor:'星陨·绛紫',mbti:'INFP',sign:'天蝎座',rarity:'稀有',likes:333,type:'热门',grad:'from-fuchsia-600 via-purple-700 to-pink-700'},
-{user:'木卫四的猫',meteor:'星陨·月白',mbti:'ISFP',sign:'巨蟹座',rarity:'稀有',likes:207,type:'最新',grad:'from-slate-100 via-indigo-200 to-violet-300'},
-{user:'二十八宿弟子',meteor:'星陨·翡翠',mbti:'ENFP',sign:'金牛座',rarity:'稀有',likes:255,type:'最新',grad:'from-emerald-400 to-green-700'},
-{user:'流光信使',meteor:'星陨·赤焰',mbti:'ESTP',sign:'狮子座',rarity:'稀有',likes:278,type:'热门',grad:'from-red-500 via-orange-500 to-amber-400'},
-{user:'星屿岛主',meteor:'星陨·珊瑚',mbti:'ESFJ',sign:'天秤座',rarity:'稀有',likes:226,type:'热门',grad:'from-rose-400 via-pink-400 to-orange-300'},
-{user:'镜界星灵',meteor:'星陨·星渊',mbti:'INFJ',sign:'双鱼座',rarity:'稀有',likes:301,type:'热门',grad:'from-indigo-400 via-violet-500 to-fuchsia-600'},
-// === 普通 16 颗 ===
-{user:'星尘收集者',meteor:'星陨·翠灵',mbti:'ENFP',sign:'双子座',rarity:'普通',likes:156,type:'最新',grad:'from-emerald-400 to-teal-500'},
-{user:'天文小白',meteor:'星陨·暖阳',mbti:'ESFJ',sign:'白羊座',rarity:'普通',likes:98,type:'最新',grad:'from-amber-400 to-orange-500'},
-{user:'星海拾贝',meteor:'星陨·碎冰',mbti:'ISTP',sign:'水瓶座',rarity:'普通',likes:78,type:'最新',grad:'from-cyan-300 to-blue-500'},
-{user:'北辰使者',meteor:'星陨·初露',mbti:'ISFJ',sign:'处女座',rarity:'普通',likes:112,type:'热门',grad:'from-slate-200 to-cyan-300'},
-{user:'银河漂流',meteor:'星陨·薄雾',mbti:'INFP',sign:'双鱼座',rarity:'普通',likes:89,type:'最新',grad:'from-slate-400 to-blue-500'},
-{user:'星语者',meteor:'星陨·麦穗',mbti:'ESFJ',sign:'处女座',rarity:'普通',likes:124,type:'热门',grad:'from-yellow-300 to-amber-500'},
-{user:'天琴座牧民',meteor:'星陨·苔藓',mbti:'ISFP',sign:'金牛座',rarity:'普通',likes:67,type:'最新',grad:'from-green-400 to-emerald-600'},
-{user:'黑洞研究员',meteor:'星陨·樱信',mbti:'INTP',sign:'双子座',rarity:'普通',likes:101,type:'热门',grad:'from-pink-300 to-rose-400'},
-{user:'行星考古家',meteor:'星陨·砂金',mbti:'ISTJ',sign:'金牛座',rarity:'普通',likes:88,type:'最新',grad:'from-amber-500 to-yellow-700'},
-{user:'星图绘师',meteor:'星陨·苏打',mbti:'ENTP',sign:'水瓶座',rarity:'普通',likes:135,type:'热门',grad:'from-cyan-200 to-blue-400'},
-{user:'星野画家',meteor:'星陨·云雀',mbti:'ENFP',sign:'双子座',rarity:'普通',likes:144,type:'热门',grad:'from-slate-300 to-indigo-400'},
-{user:'太阳风船长',meteor:'星陨·野草',mbti:'ESTJ',sign:'白羊座',rarity:'普通',likes:73,type:'最新',grad:'from-lime-400 to-emerald-600'},
-{user:'星河钓客',meteor:'星陨·清晨',mbti:'INFJ',sign:'天秤座',rarity:'普通',likes:118,type:'热门',grad:'from-orange-200 to-pink-300'},
-{user:'北斗船工',meteor:'星陨·童心',mbti:'ESFP',sign:'狮子座',rarity:'普通',likes:159,type:'热门',grad:'from-pink-400 via-yellow-300 to-cyan-400'},
-{user:'麦哲伦的影子',meteor:'星陨·暮光',mbti:'INTJ',sign:'天蝎座',rarity:'普通',likes:128,type:'热门',grad:'from-violet-500 to-orange-400'},
-{user:'星象观测员',meteor:'星陨·涟漪',mbti:'INFP',sign:'巨蟹座',rarity:'普通',likes:96,type:'最新',grad:'from-blue-400 to-emerald-500'}];
-
-const GRADIENTS=['from-indigo-500 to-purple-600','from-cyan-400 to-blue-600','from-pink-500 to-rose-600','from-violet-500 to-fuchsia-600','from-teal-400 to-cyan-600','from-amber-400 to-orange-600','from-emerald-400 to-teal-600','from-blue-500 to-indigo-600','from-rose-400 to-pink-600'];
-
-const PAGE_TITLES={home:'星陨宇宙',create:'创建陨石',generating:'铸造中',result:'诞生结果',archive:'宇宙档案',cultivate:'陨石培育',quiz:'天文挑战',notes:'观星笔记',activities:'线下活动',interact:'陨石互动',community:'星际广场',gallery:'星际展馆'};
-const MORE_MENU=[{key:'archive',label:'宇宙档案',icon:'📂'},{key:'cultivate',label:'养成',icon:'🌱'},{key:'quiz',label:'答题',icon:'📝'},{key:'notes',label:'观星笔记',icon:'🔭'},{key:'interact',label:'互动',icon:'💬'},{key:'gallery',label:'展馆',icon:'🖼️'}];
-const MOBILE_TABS=[{key:'home',icon:'🏠',label:'首页'},{key:'create',icon:'✨',label:'创建'},{key:'activities',icon:'🎪',label:'活动'},{key:'community',icon:'🌐',label:'广场'},{key:'__more__',icon:'⋯',label:'更多'}];
-function isMoreTabPage(p){return ['archive','cultivate','quiz','notes','interact','gallery','generating','result'].includes(p);}
+// ========== 导航 ==========
+const PAGE_TITLES={home:'星陨宇宙',create:'创建陨石',generating:'铸造中',result:'诞生结果',archive:'宇宙档案',cultivate:'陨石培育',quiz:'天文挑战',shop:'积分商城'};
+const MORE_MENU=[{key:'archive',label:'宇宙档案',icon:'📂'},{key:'cultivate',label:'养成',icon:'🌱'}];
+const MOBILE_TABS=[{key:'home',icon:'🏠',label:'首页'},{key:'create',icon:'✨',label:'创建'},{key:'quiz',icon:'📝',label:'答题'},{key:'shop',icon:'🎁',label:'商城'},{key:'__more__',icon:'⋯',label:'更多'}];
+function isMoreTabPage(p){return['archive','cultivate','generating','result'].includes(p);}
 
 // ========== 通用组件 ==========
 function MobileTopBar({page}){
@@ -305,9 +242,9 @@ return(
 
 function Navbar({current,onNavigate}){
 const pages=[
-{key:'home',label:'首页'},{key:'create',label:'创建'},{key:'archive',label:'宇宙档案'},
-{key:'cultivate',label:'养成'},{key:'quiz',label:'答题'},{key:'notes',label:'观星笔记'},
-{key:'activities',label:'线下活动'},{key:'interact',label:'互动'},{key:'community',label:'社区'}];
+{key:'home',label:'首页'},{key:'create',label:'创建'},
+{key:'archive',label:'宇宙档案'},{key:'cultivate',label:'养成'},
+{key:'quiz',label:'答题'},{key:'shop',label:'积分商城'}];
 return(
 <nav className="hidden md:block fixed top-0 left-0 right-0 z-50 glass border-b border-indigo-500/10">
 <div className="max-w-7xl mx-auto px-4 lg:px-6 py-3 flex items-center justify-between gap-4">
@@ -341,7 +278,6 @@ const orbitOuter=Math.round(size*0.18);
 const orbitInner=Math.round(size*0.08);
 return(
 <div className={`relative ${animate?'animate-float':''}`} style={{width:size,height:size}}>
-{/* === 传说级：双层环绕轨道 === */}
 {isLegend&&(<>
 <div className="absolute rounded-full border border-amber-300/50" style={{inset:`-${orbitOuter}px`,animation:'spin 9s linear infinite'}}>
 <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-amber-300" style={{boxShadow:'0 0 12px #fbbf24,0 0 22px rgba(251,191,36,0.6)'}}/>
@@ -351,7 +287,6 @@ return(
 <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-fuchsia-300" style={{boxShadow:'0 0 10px #d946ef'}}/>
 <div className="absolute top-1/2 -left-1 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-cyan-300" style={{boxShadow:'0 0 10px #22d3ee'}}/>
 </div>
-{/* 周围闪烁星点 */}
 {[0,1,2,3,4,5,6,7].map(i=>{const a=(i/8)*Math.PI*2;const r=size*0.62;return(
 <div key={i} className="absolute animate-twinkle pointer-events-none" style={{
 left:`calc(50% + ${Math.cos(a)*r}px - 3px)`,
@@ -362,11 +297,9 @@ borderRadius:'50%',
 animationDelay:`${i*0.35}s`,
 filter:'drop-shadow(0 0 4px rgba(255,255,255,0.9))'}}/>);})}
 </>)}
-{/* === 外发光晕 === */}
 {glow&&<div className="absolute inset-0 rounded-full animate-pulse-glow" style={{
 filter:`blur(${isLegend?28:20}px)`,
 background:isLegend?'radial-gradient(circle,rgba(251,191,36,0.55),rgba(217,70,239,0.32) 50%,transparent 75%)':'radial-gradient(circle,rgba(34,211,238,0.3),transparent)'}}/>}
-{/* === 主体球 === */}
 <div className={`w-full h-full rounded-full bg-gradient-to-br ${colors} relative overflow-hidden ${isLegend?'ring-2 ring-amber-200/70':''}`} style={isLegend?{boxShadow:'0 0 22px rgba(251,191,36,0.6),inset 0 0 22px rgba(255,255,255,0.18)'}:undefined}>
 <div className="absolute inset-2 rounded-full bg-gradient-to-tl from-white/20 to-transparent"/>
 <div className="absolute bottom-3 right-3 w-1/4 h-1/4 rounded-full bg-white/10 blur-sm"/>
@@ -378,7 +311,6 @@ background:isLegend?'radial-gradient(circle,rgba(251,191,36,0.55),rgba(217,70,23
 <div className="absolute bottom-4 left-1/3 w-1 h-1 rounded-full bg-white animate-twinkle" style={{animationDelay:'1.4s'}}/>
 </>)}
 </div>
-{/* === 传说徽章角标 === */}
 {isLegend&&<div className="absolute -top-1 -right-1 w-7 h-7 rounded-full bg-gradient-to-br from-amber-300 to-orange-500 flex items-center justify-center text-xs font-black text-amber-950 z-10" style={{boxShadow:'0 0 15px rgba(251,191,36,0.9),0 0 25px rgba(251,191,36,0.4)'}}>★</div>}
 </div>);}
 
@@ -388,16 +320,16 @@ function InfoCard({label,value,icon}){return(
 <div className="font-bold text-white text-sm">{value}</div>
 </div>)}
 
-function EnergyBar({value,max=100}){return(
+function EnergyBar({value,max=100,label='星星能量'}){return(
 <div className="w-full">
-<div className="flex justify-between text-xs mb-1"><span className="text-indigo-300">星星能量</span><span className="text-cyan-300">{value}/{max}</span></div>
+<div className="flex justify-between text-xs mb-1"><span className="text-indigo-300">{label}</span><span className="text-cyan-300">{value}</span></div>
 <div className="h-3 bg-space-900 rounded-full overflow-hidden border border-indigo-500/20">
-<div className="energy-bar h-full" style={{width:`${(value/max)*100}%`}}/></div></div>)}
+<div className="energy-bar h-full" style={{width:`${Math.min((value/max)*100,100)}%`}}/></div></div>)}
 
-// ========== 页面组件 ==========
+// ========== 页面 ==========
 
 // 1. 首页
-function HomePage({onNavigate}){
+function HomePage({onNavigate,energy}){
 const exampleCards=[
 {name:'星陨·烈焰',mbti:'ENTJ',sign:'狮子座',grad:'from-orange-500 to-red-600'},
 {name:'星陨·幽蓝',mbti:'INFP',sign:'双鱼座',grad:'from-blue-500 to-indigo-600'},
@@ -405,7 +337,6 @@ const exampleCards=[
 {name:'星陨·暗影',mbti:'INTJ',sign:'天蝎座',grad:'from-violet-600 to-purple-900'},
 ];
 return(<PageWrapper>
-{/* Hero */}
 <section className="relative min-h-[85dvh] sm:min-h-[90vh] flex flex-col items-center justify-center text-center px-4 sm:px-6 overflow-hidden">
 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.18),transparent_70%)]"/>
 <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(34,211,238,0.16),transparent_32%),radial-gradient(circle_at_80%_10%,rgba(217,70,239,0.14),transparent_30%)]"/>
@@ -426,10 +357,9 @@ return(<PageWrapper>
 </p>
 <div className="mt-10 flex gap-4 justify-center flex-wrap">
 <button onClick={()=>onNavigate('create')} className="btn-primary text-lg px-10 py-4">🌠 立即生成我的陨石人格</button>
-<button onClick={()=>onNavigate('community')} className="btn-outline">探索星际社区</button>
+<button onClick={()=>onNavigate('shop')} className="btn-outline">前往积分商城</button>
 </div></div></section>
 
-{/* 示例角色卡片 */}
 <section className="max-w-6xl mx-auto px-6 py-20">
 <SectionTitle title="已诞生的陨石生命体" sub="每一颗都独一无二，承载着主人的灵魂印记"/>
 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -438,10 +368,8 @@ return(<PageWrapper>
 <div className="flex justify-center mb-4"><MeteorOrb size={80} colors={c.grad}/></div>
 <h3 className="font-bold text-white">{c.name}</h3>
 <div className="mt-2 flex gap-1 justify-center"><span className="tag">{c.mbti}</span><span className="tag">{c.sign}</span></div>
-</div>))}
-</div></section>
+</div>))}</div></section>
 
-{/* 生成逻辑 */}
 <section className="max-w-5xl mx-auto px-6 py-20">
 <SectionTitle title="铸造逻辑" sub="六维宇宙参数，AI推演你的专属陨石"/>
 <div className="flex flex-wrap justify-center items-center gap-3 text-center">
@@ -454,33 +382,33 @@ return(<PageWrapper>
 <div className="glass-card px-6 py-4 border-cyan-400/40 text-cyan-300 font-bold">专属陨石人格</div>
 </div></section>
 
-{/* 养成说明 */}
 <section className="max-w-5xl mx-auto px-6 py-20">
-<SectionTitle title="喂养你的陨石" sub="让它在宇宙中持续成长"/>
-<div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-{[{icon:'📝',title:'天文答题',desc:'回答天文知识获得星星能量'},{icon:'🔭',title:'观星笔记',desc:'记录星空，喂养灵感'},{icon:'🎪',title:'社群活动',desc:'参与活动赢取限定奖励'},{icon:'💬',title:'陨石互动',desc:'和你的陨石聊天对话'}].map((item,i)=>(
+<SectionTitle title="成长你的陨石" sub="答题积累星星能量，兑换专属奖励"/>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+{[
+{icon:'📝',title:'天文答题',desc:'回答天文知识题，每题答对 +20 星星能量',action:'去答题',page:'quiz'},
+{icon:'🌱',title:'陨石养成',desc:'持续喂养让陨石从胚芽进化到超新星形态',action:'去养成',page:'cultivate'},
+{icon:'🎁',title:'积分兑换',desc:'用积累的星星能量兑换天文馆专属奖品',action:'去商城',page:'shop'}
+].map((item,i)=>(
 <div key={i} className="glass-card p-6 text-center">
 <div className="text-4xl mb-3">{item.icon}</div>
 <h3 className="font-bold mb-2">{item.title}</h3>
-<p className="text-xs text-indigo-300">{item.desc}</p>
-</div>))}
-</div></section>
+<p className="text-xs text-indigo-300 mb-4">{item.desc}</p>
+<button onClick={()=>onNavigate(item.page)} className="btn-outline text-xs py-2 px-4">{item.action} →</button>
+</div>))}</div></section>
 
-{/* 永生档案 */}
 <section className="max-w-4xl mx-auto px-6 py-20 text-center">
 <SectionTitle title="宇宙档案·永生机制" sub="你的陨石将永远存在于这片星空中"/>
 <div className="glass-card p-10 max-w-2xl mx-auto">
 <p className="text-indigo-200 leading-relaxed">每颗陨石人格一经铸造，即获得永久宇宙编号。它的成长记录、性格演化、星轨数据将被永久收录在星际档案馆中。即使星海变迁，你的陨石也将在这片数字宇宙中永恒闪耀。</p>
 </div></section>
 
-{/* 首页特别页脚 */}
 <footer className="border-t border-indigo-500/10 py-12 text-center text-indigo-400/50 text-xs">
 <p>🌠 星际档案馆 · Meteor MBTI Universe</p>
 <p className="mt-1">© 2026 星陨人格宇宙 — 你的灵魂，值得一颗星</p>
 </footer>
 </PageWrapper>)}
 
-// 全局页脚（所有页面共用，含上海天文馆商标；移动端为底栏预留空间）
 function GlobalFooter(){return(
 <footer className="relative z-10 border-t border-indigo-500/10 mt-8 md:mt-12 py-5 md:py-6 px-4 sm:px-6 bg-space-950/60 backdrop-blur-md pb-28 md:pb-6">
 <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3 text-[10px] sm:text-[11px] text-indigo-400/60 text-center md:text-left">
@@ -500,7 +428,7 @@ function GlobalFooter(){return(
 </div>
 <div className="text-[10px] text-indigo-500/60">© 2026 星陨人格宇宙 · Meteor MBTI Universe</div>
 </div>
-</footer>);}
+</footer>)}
 
 // 2. 创建页
 function CreatePage({onNavigate}){
@@ -511,7 +439,6 @@ const titles=['基础人格信息','上传形象信息','生成偏好选择','�
 return(<PageWrapper>
 <div className="max-w-2xl mx-auto px-6 py-20">
 <SectionTitle title="铸造你的陨石人格" sub={`STEP ${step}/4 · ${titles[step-1]}`}/>
-{/* 步骤条 */}
 <div className="flex gap-2 mb-10">
 {[1,2,3,4].map(s=>(
 <div key={s} className="flex-1 h-1.5 rounded-full transition-all duration-500" style={{background:step>=s?'linear-gradient(90deg,#6366f1,#22d3ee)':'#1e1b4b'}}/>))}
@@ -613,7 +540,6 @@ const d=MOCK_RESULT;
 return(<PageWrapper>
 <div className="max-w-6xl mx-auto px-6 py-16">
 <div className="grid md:grid-cols-[350px_1fr] gap-10">
-{/* 左侧主视觉 */}
 <div className="flex flex-col items-center">
 <div className="page-enter"><MeteorOrb size={260} colors="from-indigo-500 via-purple-500 to-pink-500"/></div>
 <h1 className="mt-6 text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-pink-300">{d.name}</h1>
@@ -621,10 +547,9 @@ return(<PageWrapper>
 <div className="flex gap-2 mt-4 flex-wrap justify-center">{d.tags.map(t=><span key={t} className="tag">{t}</span>)}</div>
 <div className="mt-8 flex gap-3 flex-wrap justify-center">
 <button onClick={()=>onNavigate('archive')} className="btn-primary text-sm">💾 存入宇宙档案</button>
-<button onClick={()=>onNavigate('community')} className="btn-outline text-sm">🌍 分享到社区</button>
+<button onClick={()=>onNavigate('cultivate')} className="btn-outline text-sm">🌱 开始培育陨石</button>
 <button onClick={()=>onNavigate('create')} className="text-xs text-indigo-400 hover:text-cyan-300 underline underline-offset-4 mt-2 w-full text-center">重新铸造</button>
 </div></div>
-{/* 右侧档案 */}
 <div className="space-y-4 fade-in">
 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
 <InfoCard icon="🪐" label="星球代码" value={d.planetCode}/>
@@ -646,15 +571,13 @@ return(<PageWrapper>
 <div className="glass-card p-6 border-cyan-400/20">
 <h3 className="text-sm text-cyan-400 mb-2">📡 今日宇宙播报</h3>
 <p className="text-cyan-200/80 text-sm leading-relaxed">{d.broadcast}</p></div>
-<div className="glass-card p-6 border-pink-400/20">
-<h3 className="text-sm text-pink-400 mb-2">🔭 未来倾向</h3>
-<p className="text-pink-200/80 text-sm leading-relaxed">{d.future}</p></div>
 </div></div></div>
 </PageWrapper>)}
 
 // 5. 宇宙档案页
-function ArchivePage({onNavigate}){
+function ArchivePage({onNavigate,energy}){
 const a=MOCK_ARCHIVE;
+const stage=getStage(energy);
 return(<PageWrapper>
 <div className="max-w-5xl mx-auto px-6 py-16">
 <SectionTitle title="宇宙档案" sub="你的专属星际身份证"/>
@@ -664,14 +587,21 @@ return(<PageWrapper>
 <div className="text-6xl mb-3">{a.avatar}</div>
 <h3 className="text-xl font-bold">{a.nickname}</h3>
 <p className="text-indigo-400 text-sm mt-1">宇宙旅人</p>
-<div className="mt-4"><EnergyBar value={a.energy}/></div>
+<div className="mt-4">
+<div className="flex justify-between text-xs mb-1"><span className="text-indigo-300">星星能量</span><span className="text-cyan-300">{energy}</span></div>
+<div className="h-3 bg-space-900 rounded-full overflow-hidden border border-indigo-500/20">
+<div className="energy-bar h-full" style={{width:`${Math.min(getStageProgress(energy),100)}%`}}/>
+</div>
+<p className="text-xs text-indigo-400 mt-1">{STAGES[stage]} · 阶段 {stage+1}/5</p>
+</div>
 </div>
 <div className="glass-card p-6 text-center">
-<MeteorOrb size={100} colors="from-indigo-500 to-pink-500"/>
+<MeteorOrb size={100} colors={STAGE_COLORS[stage]}/>
 <p className="font-bold mt-3">{a.meteorName}</p>
-<p className="text-xs text-indigo-400 mt-1">{a.level}</p>
+<p className="text-xs text-indigo-400 mt-1">{STAGES[stage]}</p>
 </div>
-<button onClick={()=>onNavigate('cultivate')} className="btn-outline w-full text-sm">获取更多星能 →</button>
+<button onClick={()=>onNavigate('quiz')} className="btn-primary w-full text-sm">📝 去答题赚取能量 →</button>
+<button onClick={()=>onNavigate('shop')} className="btn-outline w-full text-sm">🎁 前往积分商城 →</button>
 </div>
 <div className="space-y-4">
 <div className="glass-card p-6">
@@ -687,52 +617,48 @@ return(<PageWrapper>
 <div className="glass-card p-6 border-cyan-400/20">
 <h3 className="text-sm text-cyan-400 mb-2">🔭 最近占卜播报</h3>
 <p className="text-sm text-cyan-200/80">{a.recentDivine}</p></div>
-<div className="grid grid-cols-2 gap-4">
-<div className="glass-card p-5"><h3 className="text-xs text-indigo-400 mb-2">📓 观星笔记</h3>{a.notes.map((n,i)=><p key={i} className="text-xs text-indigo-200 mt-1">• {n}</p>)}</div>
-<div className="glass-card p-5"><h3 className="text-xs text-indigo-400 mb-2">💬 互动记录</h3>{a.records.map((r,i)=><p key={i} className="text-xs text-indigo-200 mt-1">• {r}</p>)}</div>
-</div></div></div></div>
+</div></div></div>
 </PageWrapper>)}
 
 // 6. 养成页
-function CultivatePage({onNavigate}){
-const [energy,setEnergy]=useState(62);
-const [stage,setStage]=useState(0);
-const stages=['胚芽形态','星核形态','星云形态','恒星形态','超新星形态'];
-const stageColors=['from-indigo-500 to-purple-600','from-cyan-400 to-blue-600','from-pink-500 to-purple-600','from-amber-400 to-orange-500','from-white to-cyan-300'];
+function CultivatePage({onNavigate,energy,onAddEnergy}){
+const stage=getStage(energy);
+const progress=getStageProgress(energy);
 const skills=[{name:'星语感应',lv:2,max:5},{name:'梦境编织',lv:1,max:5},{name:'星尘护盾',lv:1,max:5},{name:'时空漫步',lv:0,max:5}];
-const feed=()=>{setEnergy(e=>{const nv=Math.min(e+15,100);if(nv>=100&&stage<stages.length-1){setStage(s=>s+1);return 20}return nv});};
 return(<PageWrapper>
 <div className="max-w-5xl mx-auto px-6 py-16">
 <SectionTitle title="陨石培育舱" sub="用星星能量喂养你的陨石生命体"/>
 <div className="grid md:grid-cols-[1fr_300px] gap-8">
 <div className="flex flex-col items-center">
-{/* 中央陨石 */}
 <div className="relative w-72 h-72 flex items-center justify-center mb-8">
 <div className="orbit w-full h-full opacity-30"/>
 <div className="orbit w-56 h-56 opacity-20" style={{animationDuration:'12s',animationDirection:'reverse'}}/>
 <div className="orbit w-40 h-40 opacity-10" style={{animationDuration:'8s'}}/>
 <div className="absolute inset-0 flex items-center justify-center">
-<MeteorOrb size={140} colors={stageColors[stage]}/>
+<MeteorOrb size={140} colors={STAGE_COLORS[stage]}/>
 </div></div>
-<p className="text-lg font-bold text-cyan-300">{stages[stage]}</p>
-<p className="text-xs text-indigo-400 mt-1">阶段 {stage+1}/{stages.length}</p>
-{/* 成长进度 */}
-<div className="w-full max-w-md mt-6"><EnergyBar value={energy}/></div>
-{/* 成长阶段预览 */}
-<div className="flex gap-3 mt-8">{stages.map((s,i)=>(
+<p className="text-lg font-bold text-cyan-300">{STAGES[stage]}</p>
+<p className="text-xs text-indigo-400 mt-1">阶段 {stage+1}/{STAGES.length}</p>
+<div className="w-full max-w-md mt-6">
+<div className="flex justify-between text-xs mb-1">
+<span className="text-indigo-300">阶段进度</span>
+<span className="text-cyan-300">{progress}%</span>
+</div>
+<div className="h-3 bg-space-900 rounded-full overflow-hidden border border-indigo-500/20">
+<div className="energy-bar h-full" style={{width:`${progress}%`}}/></div>
+<p className="text-xs text-indigo-400 mt-2 text-center">总星星能量：{energy}</p>
+</div>
+<div className="flex gap-3 mt-8">{STAGES.map((s,i)=>(
 <div key={i} className={`text-center ${i<=stage?'opacity-100':'opacity-30'}`}>
-<div className={`w-10 h-10 rounded-full bg-gradient-to-br ${stageColors[i]} mx-auto ${i===stage?'ring-2 ring-cyan-400 ring-offset-2 ring-offset-space-950':''}`}/>
+<div className={`w-10 h-10 rounded-full bg-gradient-to-br ${STAGE_COLORS[i]} mx-auto ${i===stage?'ring-2 ring-cyan-400 ring-offset-2 ring-offset-space-950':''}`}/>
 <p className="text-[10px] mt-1 text-indigo-300">{s}</p></div>))}</div>
 </div>
-{/* 右侧面板 */}
 <div className="space-y-4">
 <div className="glass-card p-5">
 <h3 className="text-sm font-bold text-cyan-300 mb-3">⚡ 喂养行为</h3>
 <div className="space-y-2">
-<button onClick={feed} className="w-full btn-outline text-xs py-3">🌟 注入星星能量</button>
-<button onClick={()=>onNavigate('quiz')} className="w-full glass-card p-3 text-xs text-left hover:border-cyan-400/40 cursor-pointer">📝 去答题获取能量</button>
-<button onClick={()=>onNavigate('notes')} className="w-full glass-card p-3 text-xs text-left hover:border-cyan-400/40 cursor-pointer">🔭 上传观星笔记</button>
-<button onClick={()=>onNavigate('activities')} className="w-full glass-card p-3 text-xs text-left hover:border-cyan-400/40 cursor-pointer">🎪 参与社群活动</button>
+<button onClick={()=>onAddEnergy(15)} className="w-full btn-outline text-xs py-3">🌟 注入星星能量 +15</button>
+<button onClick={()=>onNavigate('quiz')} className="w-full glass-card p-3 text-xs text-left hover:border-cyan-400/40 cursor-pointer transition-all">📝 去答题获取能量 +20/题</button>
 </div></div>
 <div className="glass-card p-5">
 <h3 className="text-sm font-bold text-indigo-300 mb-3">🌿 技能树</h3>
@@ -745,467 +671,196 @@ return(<PageWrapper>
 <div className="glass-card p-5">
 <h3 className="text-sm font-bold text-indigo-300 mb-2">✨ 稀有度</h3>
 <div className="flex gap-1">{[1,2,3,4,5].map(i=><span key={i} className={`text-lg ${i<=stage+1?'text-yellow-400':'text-gray-600'}`}>★</span>)}</div>
-</div></div></div></div>
+</div>
+<button onClick={()=>onNavigate('shop')} className="w-full btn-primary text-xs py-3">🎁 用能量兑换奖品</button>
+</div></div></div>
 </PageWrapper>)}
 
 // 7. 答题页
-function QuizPage({onNavigate}){
-const [qi,setQi]=useState(0);const [score,setScore]=useState(0);const [chosen,setChosen]=useState(null);const [streak,setStreak]=useState(0);
+function QuizPage({onNavigate,onAddEnergy}){
+const [qi,setQi]=useState(0);
+const [score,setScore]=useState(0);
+const [chosen,setChosen]=useState(null);
+const [streak,setStreak]=useState(0);
+const [finished,setFinished]=useState(false);
 const q=MOCK_QUIZ[qi];
-const answer=(i)=>{setChosen(i);if(i===q.ans){setScore(s=>s+20);setStreak(s=>s+1)}else{setStreak(0)}
-setTimeout(()=>{setChosen(null);setQi(x=>(x+1)%MOCK_QUIZ.length)},1200)};
+const answer=(i)=>{
+setChosen(i);
+if(i===q.ans){setScore(s=>s+20);setStreak(s=>s+1);onAddEnergy(20)}
+else{setStreak(0)}
+setTimeout(()=>{
+setChosen(null);
+const next=qi+1;
+if(next>=MOCK_QUIZ.length){setFinished(true)}
+else{setQi(next)}
+},1200)};
+if(finished)return(<PageWrapper>
+<div className="max-w-2xl mx-auto px-6 py-16 text-center">
+<div className="flex justify-center mb-6"><MeteorOrb size={120}/></div>
+<h2 className="text-3xl font-black text-cyan-300 mb-2">答题完成！</h2>
+<p className="text-indigo-300 mb-4">本轮获得 <span className="text-2xl font-bold text-cyan-300">{score}</span> 星星能量</p>
+<p className="text-xs text-indigo-400 mb-8">能量已同步到你的陨石成长值</p>
+<div className="flex gap-3 justify-center flex-wrap">
+<button onClick={()=>{setQi(0);setScore(0);setStreak(0);setFinished(false)}} className="btn-primary">再来一轮 🔄</button>
+<button onClick={()=>onNavigate('shop')} className="btn-outline">去兑换奖品 🎁</button>
+<button onClick={()=>onNavigate('cultivate')} className="text-xs text-indigo-400 hover:text-cyan-300 underline underline-offset-4">查看陨石成长</button>
+</div>
+</div>
+</PageWrapper>);
 return(<PageWrapper>
 <div className="max-w-2xl mx-auto px-6 py-16">
-<div className="flex items-center justify-between mb-8">
+<div className="flex items-start justify-between mb-8 gap-4">
 <SectionTitle title="天文知识挑战" sub={`第 ${qi+1} 题 / 共 ${MOCK_QUIZ.length} 题`}/>
-<div className="text-right"><div className="text-xs text-indigo-400">得分</div><div className="text-2xl font-bold text-cyan-300">{score}</div>
-{streak>=2&&<div className="text-xs text-amber-400 mt-1">🔥 连续答对 {streak}</div>}</div></div>
+<div className="text-right shrink-0">
+<div className="text-xs text-indigo-400">本轮得分</div>
+<div className="text-2xl font-bold text-cyan-300">{score}</div>
+{streak>=2&&<div className="text-xs text-amber-400 mt-1">🔥 连续答对 {streak}</div>}
+</div></div>
 <div className="glass-card p-8">
-<div className="flex items-center gap-3 mb-6"><MeteorOrb size={40} animate={false}/><span className="text-xs text-indigo-400">正在喂养：星陨·织梦者</span></div>
+<div className="flex items-center gap-3 mb-6"><MeteorOrb size={40} animate={false}/><span className="text-xs text-indigo-400">正在喂养：星陨·织梦者 · 答对 +20 ⚡</span></div>
 <h3 className="text-xl font-bold mb-6">{q.q}</h3>
 <div className="space-y-3">{q.opts.map((o,i)=>{
-let cls='glass-card p-4 cursor-pointer text-sm transition-all ';
+let cls='glass-card p-4 cursor-pointer text-sm transition-all w-full text-left ';
 if(chosen!==null){if(i===q.ans)cls+='border-green-400 bg-green-400/10 text-green-300';else if(i===chosen)cls+='border-red-400 bg-red-400/10 text-red-300';else cls+='opacity-40'}
 else cls+='hover:border-cyan-400/40';
 return <button key={i} onClick={()=>chosen===null&&answer(i)} className={cls}>{o}</button>})}</div>
 {chosen!==null&&<div className={`mt-4 text-sm text-center ${chosen===q.ans?'text-green-300':'text-red-300'}`}>{chosen===q.ans?'✨ 正确！+20 星星能量':'💫 加油，下次一定！'}</div>}
-</div></div>
+</div>
+<div className="mt-6 flex justify-center">
+<div className="flex gap-1">{MOCK_QUIZ.map((_,i)=>(
+<div key={i} className={`w-2 h-2 rounded-full transition-all ${i<qi?'bg-cyan-400':i===qi?'bg-white':'bg-indigo-700'}`}/>))}</div>
+</div>
+</div>
 </PageWrapper>)}
 
-// 8. 观星笔记页
-function NotesPage(){
-const [notes]=useState([{user:'银河猎人',text:'今晚在山顶看到了银河全景，猎户座格外清晰。',place:'云南大理',weather:'☀ 晴朗',stars:'猎户座,天狼星'},{user:'星尘收集者',text:'城市灯光下依然找到了北斗七星。',place:'上海外滩',weather:'🌙 多云',stars:'北斗七星'}]);
-return(<PageWrapper>
-<div className="max-w-4xl mx-auto px-6 py-16">
-<SectionTitle title="观星笔记" sub="记录星空，喂养灵感"/>
-{/* 创作区 */}
-<div className="glass-card p-8 mb-10">
-<h3 className="font-bold text-cyan-300 mb-4">✍️ 写一篇观星笔记</h3>
-<textarea placeholder="今夜的星空如何？写下你的感受..." className="w-full bg-space-950 border border-indigo-500/30 rounded-xl p-4 h-28 resize-none focus:border-cyan-400 focus:outline-none text-sm mb-4"/>
-<div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-<div className="border-2 border-dashed border-indigo-500/30 rounded-xl p-6 text-center cursor-pointer hover:border-cyan-400/40 transition-colors"><span className="text-2xl">📷</span><p className="text-xs text-indigo-400 mt-1">上传照片</p></div>
-<select className="bg-space-950 border border-indigo-500/30 rounded-xl px-3 py-2 text-sm text-white"><option>选择观星地点</option><option>城市阳台</option><option>郊外山顶</option><option>海边</option><option>沙漠</option></select>
-<select className="bg-space-950 border border-indigo-500/30 rounded-xl px-3 py-2 text-sm text-white"><option>天气状态</option><option>☀ 晴朗</option><option>🌙 多云</option><option>⭐ 万里无云</option></select>
-<input placeholder="看到的星座/行星" className="bg-space-950 border border-indigo-500/30 rounded-xl px-3 py-2 text-sm"/>
-</div>
-<button className="btn-primary text-sm">发布并获取星星能量 +15 ⭐</button></div>
-{/* 已有笔记 */}
-<h3 className="font-bold text-indigo-300 mb-4">🌌 社区精选笔记</h3>
-<div className="grid md:grid-cols-2 gap-4">{notes.map((n,i)=>(
-<div key={i} className="glass-card p-5">
-<div className="flex items-center gap-2 mb-3"><div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500"/><span className="font-bold text-sm">{n.user}</span></div>
-<p className="text-sm text-indigo-200 mb-3">{n.text}</p>
-<div className="flex gap-2 flex-wrap text-xs"><span className="tag">📍 {n.place}</span><span className="tag">{n.weather}</span>{n.stars.split(',').map(s=><span key={s} className="tag">⭐ {s}</span>)}</div>
-</div>))}</div>
-</div></PageWrapper>)}
-
-// 9. 线下活动页 —— 28星宿 × 大天文家 双主题
-const MAP_PIN_POS={A1:[110,135],A2:[220,135],A3:[110,255],A4:[220,255],B1:[390,135],B2:[500,135],B3:[390,255],B4:[500,255]};
-
-function VenueMap({activeId}){
-const p=MAP_PIN_POS[activeId];
-return(
-<svg viewBox="0 0 600 380" className="w-full h-full">
-<defs>
-<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-<path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(99,102,241,0.08)" strokeWidth="1"/>
-</pattern>
-</defs>
-<rect width="600" height="380" fill="url(#grid)"/>
-{/* A馆 - 28星宿 */}
-<rect x="40" y="40" width="240" height="280" rx="12" fill="rgba(34,211,238,0.05)" stroke="#22d3ee" strokeWidth="1.5"/>
-<text x="160" y="62" textAnchor="middle" fill="#22d3ee" fontSize="13" fontWeight="bold">A馆 · 28星宿主题区</text>
-<rect x="60" y="78" width="100" height="112" rx="6" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.4)"/>
-<text x="110" y="100" textAnchor="middle" fill="#34d399" fontSize="11" fontWeight="bold">A1 青龙</text>
-<text x="110" y="118" textAnchor="middle" fill="#a7f3d0" fontSize="9">东方七宿</text>
-<rect x="170" y="78" width="100" height="112" rx="6" fill="rgba(99,102,241,0.1)" stroke="rgba(99,102,241,0.4)"/>
-<text x="220" y="100" textAnchor="middle" fill="#818cf8" fontSize="11" fontWeight="bold">A2 玄武</text>
-<text x="220" y="118" textAnchor="middle" fill="#c7d2fe" fontSize="9">北方七宿</text>
-<rect x="60" y="200" width="100" height="112" rx="6" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.4)"/>
-<text x="110" y="222" textAnchor="middle" fill="#fbbf24" fontSize="11" fontWeight="bold">A3 白虎</text>
-<text x="110" y="240" textAnchor="middle" fill="#fde68a" fontSize="9">西方七宿</text>
-<rect x="170" y="200" width="100" height="112" rx="6" fill="rgba(244,63,94,0.1)" stroke="rgba(244,63,94,0.4)"/>
-<text x="220" y="222" textAnchor="middle" fill="#fb7185" fontSize="11" fontWeight="bold">A4 朱雀</text>
-<text x="220" y="240" textAnchor="middle" fill="#fecdd3" fontSize="9">南方七宿</text>
-{/* B馆 - 大天文家 */}
-<rect x="320" y="40" width="240" height="280" rx="12" fill="rgba(217,70,239,0.05)" stroke="#d946ef" strokeWidth="1.5"/>
-<text x="440" y="62" textAnchor="middle" fill="#d946ef" fontSize="13" fontWeight="bold">B馆 · 大天文家主题区</text>
-<rect x="340" y="78" width="100" height="112" rx="6" fill="rgba(245,158,11,0.1)" stroke="rgba(245,158,11,0.4)"/>
-<text x="390" y="100" textAnchor="middle" fill="#fbbf24" fontSize="11" fontWeight="bold">B1 中华厅</text>
-<text x="390" y="118" textAnchor="middle" fill="#fde68a" fontSize="9">张衡·祖冲之</text>
-<rect x="450" y="78" width="100" height="112" rx="6" fill="rgba(244,63,94,0.1)" stroke="rgba(244,63,94,0.4)"/>
-<text x="500" y="100" textAnchor="middle" fill="#fb7185" fontSize="11" fontWeight="bold">B2 西方厅</text>
-<text x="500" y="118" textAnchor="middle" fill="#fecdd3" fontSize="9">伽利略·开普勒</text>
-<rect x="340" y="200" width="100" height="112" rx="6" fill="rgba(168,85,247,0.1)" stroke="rgba(168,85,247,0.4)"/>
-<text x="390" y="222" textAnchor="middle" fill="#c084fc" fontSize="11" fontWeight="bold">B3 圆顶剧场</text>
-<text x="390" y="240" textAnchor="middle" fill="#e9d5ff" fontSize="9">哥白尼·沉浸剧</text>
-<rect x="450" y="200" width="100" height="112" rx="6" fill="rgba(239,68,68,0.1)" stroke="rgba(239,68,68,0.4)"/>
-<text x="500" y="222" textAnchor="middle" fill="#f87171" fontSize="11" fontWeight="bold">B4 实验室</text>
-<text x="500" y="240" textAnchor="middle" fill="#fecaca" fontSize="9">牛顿·哈勃</text>
-{/* 入口 */}
-<rect x="280" y="160" width="40" height="40" fill="rgba(34,211,238,0.18)" stroke="#22d3ee" strokeDasharray="3,3"/>
-<text x="300" y="184" textAnchor="middle" fill="#22d3ee" fontSize="9">入口</text>
-{/* 当前活动定位 + 引导路径 */}
-{p&&(<g>
-<path d={`M 300 180 Q ${(300+p[0])/2} ${(180+p[1])/2-32}, ${p[0]} ${p[1]}`} fill="none" stroke="#22d3ee" strokeWidth="2" strokeDasharray="6,4" opacity="0.7"/>
-<circle cx={p[0]} cy={p[1]} r="14" fill="#22d3ee" className="map-pulse" style={{transformOrigin:`${p[0]}px ${p[1]}px`}}/>
-<circle cx={p[0]} cy={p[1]} r="11" fill="#22d3ee"/>
-<text x={p[0]} y={p[1]+4} textAnchor="middle" fontSize="11" fontWeight="bold">📍</text>
-</g>)}
-</svg>);
-}
-
-function ActivitiesPage(){
-const [theme,setTheme]=useState('28星宿');
+// 8. 积分商城页
+function ShopPage({onNavigate,energy,onSpendEnergy}){
+const [cat,setCat]=useState('全部');
 const [modal,setModal]=useState(null);
-const [signedIn,setSignedIn]=useState({});
-const [checkedIn,setCheckedIn]=useState({});
-const [signCode,setSignCode]=useState('');
-const [signMsg,setSignMsg]=useState('');
-const [checkText,setCheckText]=useState('');
-const [showNoticeBar,setShowNoticeBar]=useState(true);
-const [checkPosts,setCheckPosts]=useState([
-{user:'银河猎人',activity:'青龙七宿·夜游观测之旅',text:'第一次用专业望远镜看到角宿一，眼眶有点湿 ✨',time:'2 小时前',likes:34,grad:'from-emerald-400 to-cyan-500'},
-{user:'星尘漫步',activity:'张衡·浑天仪复刻工坊',text:'三个小时打磨出一个迷你浑天仪，太有成就感了！',time:'5 小时前',likes:67,grad:'from-amber-400 to-orange-600'},
-{user:'天琴座之子',activity:'伽利略之夜·望远镜里的木星',text:'木卫一二三四清晰可见，仿佛触摸到 400 年前那个夜晚。',time:'昨天',likes:52,grad:'from-pink-400 to-rose-600'},
-{user:'极光守望',activity:'玄武七宿·北斗冥想夜',text:'静坐 30 分钟，第一次真正"听见"星空的呼吸。',time:'2 天前',likes:41,grad:'from-indigo-500 to-violet-700'}]);
+const [redeemed,setRedeemed]=useState({});
+const [toast,setToast]=useState('');
+const cats=['全部','周边','特权','限定'];
+const filtered=cat==='全部'?SHOP_ITEMS:SHOP_ITEMS.filter(i=>i.cat===cat);
 
-const closeModal=()=>{setModal(null);setSignCode('');setSignMsg('');setCheckText('')};
+const showToast=(msg)=>{setToast(msg);setTimeout(()=>setToast(''),3000)};
 
-const submitSign=(act)=>{
-if(signCode.trim().toUpperCase()===act.signCode){
-setSignedIn(s=>({...s,[act.id]:true}));
-setSignMsg(`✨ 签到成功！获得 ${act.reward}`);
-}else{
-setSignMsg('❌ 签到码错误，请确认现场展板上的签到码');
-}};
-
-const submitCheck=(act)=>{
-if(!checkText.trim())return;
-setCheckedIn(c=>({...c,[act.id]:true}));
-setCheckPosts(p=>[{user:'我',activity:act.title,text:checkText,time:'刚刚',likes:0,grad:act.cover},...p]);
-closeModal();
+const confirm=(item)=>{
+onSpendEnergy(item.cost);
+setRedeemed(r=>({...r,[item.id]:true}));
+setModal(null);
+showToast(`✨ 兑换成功！${item.name} 已加入你的星际邮包`);
 };
 
-const filtered=OFFLINE_ACTIVITIES.filter(a=>a.theme===theme);
-
-return(<PageWrapper>
-<div className="max-w-6xl mx-auto px-6 py-12">
-{/* === 活动广告通知（跑马灯） === */}
-{showNoticeBar&&(
-<div className="glass-card mb-8 border-cyan-400/30 overflow-hidden">
-<div className="flex items-center gap-3 px-4 py-3">
-<span className="text-xs font-bold text-cyan-300 whitespace-nowrap shrink-0">📢 活动广播</span>
-<div className="flex-1 overflow-hidden relative" style={{maskImage:'linear-gradient(to right,transparent,#000 5%,#000 95%,transparent)'}}>
-<div className="marquee-track">
-{[...OFFLINE_NOTICES,...OFFLINE_NOTICES].map((n,i)=>(
-<span key={i} className="text-xs text-indigo-200 inline-flex items-center gap-2">
-<span className={`tag text-[10px] py-0.5 px-2 ${n.cls}`}>{n.type}</span>{n.text}
-</span>))}
-</div>
-</div>
-<button onClick={()=>setShowNoticeBar(false)} className="text-indigo-400 hover:text-white text-lg shrink-0 leading-none">×</button>
-</div>
-</div>)}
-
-<SectionTitle title="线下活动" sub="28 星宿 × 大天文家 · 跨越东西方的天文盛宴"/>
-
-{/* === 主题切换 === */}
-<div className="flex gap-3 justify-center mb-10 flex-wrap">
-{['28星宿','大天文家'].map(t=>(
-<button key={t} onClick={()=>setTheme(t)} className={`px-6 py-3 rounded-full text-sm font-bold transition-all ${theme===t?'bg-gradient-to-r from-nebula-purple to-cyan-400 text-white shadow-glow':'glass-card text-indigo-300 hover:text-cyan-300'}`}>
-{t==='28星宿'?'🐉 28 星宿主题':'🔭 大天文家主题'}
-</button>))}
-</div>
-
-{/* === 主题简介 === */}
-{theme==='28星宿'?(
-<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 fade-in">
-{XING_XIU.map((x,i)=>(
-<div key={i} className="glass-card p-5">
-<div className={`w-12 h-12 rounded-full bg-gradient-to-br ${x.color} mb-3 flex items-center justify-center font-bold text-xs text-white`}>{x.dir.slice(2,4)}</div>
-<h3 className="font-bold text-cyan-300 text-sm">{x.dir}七宿</h3>
-<p className="text-[10px] text-indigo-400 mt-1 leading-relaxed">{x.myth}</p>
-<div className="flex flex-wrap gap-1 mt-3">
-{x.mansions.map(m=>(<span key={m} className="tag text-[10px] py-0.5 px-2">{m}宿</span>))}
-</div>
-</div>))}
-</div>):(
-<div className="glass-card p-6 mb-12 fade-in">
-<h3 className="font-bold text-cyan-300 mb-5 text-center">🌟 八位伟大天文家 · 横跨千年的星空对话</h3>
-<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-{ASTRONOMERS.map((a,i)=>(
-<div key={i} className="text-center group">
-<div className={`w-16 h-16 mx-auto rounded-full bg-gradient-to-br ${a.color} flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-glow`}>{a.avatar}</div>
-<p className="font-bold text-sm mt-2 text-white">{a.name}</p>
-<p className="text-[10px] text-indigo-400">{a.era}</p>
-<p className="text-[10px] text-cyan-300/70 mt-1">{a.contrib}</p>
-<p className="text-[10px] italic text-indigo-300/60 mt-1">"{a.quote}"</p>
-</div>))}
-</div>
-</div>)}
-
-{/* === 活动列表（含 签到 / 打卡 / 地图 三大功能入口） === */}
-<h3 className="text-xl font-bold text-indigo-200 mb-6">🎪 {theme}主题活动</h3>
-<div className="grid md:grid-cols-2 gap-6 mb-14">
-{filtered.map(a=>(
-<div key={a.id} className="glass-card p-6 flex flex-col">
-<div className={`w-full h-2 rounded-full bg-gradient-to-r ${a.cover} mb-4`}/>
-<div className="flex items-start justify-between mb-3">
-<h3 className="font-bold text-lg text-white flex-1 pr-2">{a.title}</h3>
-<span className={`tag text-xs shrink-0 ${a.status==='进行中'?'border-green-400 text-green-300':a.status==='报名中'?'border-cyan-400 text-cyan-300':'border-amber-400 text-amber-300'}`}>{a.status}</span>
-</div>
-<p className="text-sm text-indigo-300 mb-4 leading-relaxed">{a.desc}</p>
-<div className="grid grid-cols-2 gap-2 mb-4 text-xs">
-<div className="bg-space-950/50 rounded-lg p-2 border border-indigo-500/10"><span className="text-indigo-400">🕐 时间</span><div className="text-cyan-200 mt-0.5">{a.date}</div></div>
-<div className="bg-space-950/50 rounded-lg p-2 border border-indigo-500/10"><span className="text-indigo-400">📍 场馆</span><div className="text-cyan-200 mt-0.5">{a.venue}</div></div>
-<div className="bg-space-950/50 rounded-lg p-2 border border-indigo-500/10"><span className="text-indigo-400">🎁 奖励</span><div className="text-pink-300 mt-0.5">{a.reward}</div></div>
-<div className="bg-space-950/50 rounded-lg p-2 border border-indigo-500/10"><span className="text-indigo-400">👥 名额</span><div className="text-cyan-200 mt-0.5">{a.quota} · {a.price}</div></div>
-</div>
-<div className="grid grid-cols-3 gap-2 mt-auto">
-<button onClick={()=>setModal({type:'sign',activity:a})} className={`text-xs py-2 rounded-lg border transition-all ${signedIn[a.id]?'border-green-400 text-green-300 bg-green-400/10':'border-cyan-400/40 text-cyan-300 hover:bg-cyan-400/10'}`}>{signedIn[a.id]?'✓ 已签到':'📝 到场签到'}</button>
-<button onClick={()=>setModal({type:'check',activity:a})} className={`text-xs py-2 rounded-lg border transition-all ${checkedIn[a.id]?'border-pink-400 text-pink-300 bg-pink-400/10':'border-pink-400/40 text-pink-300 hover:bg-pink-400/10'}`}>{checkedIn[a.id]?'★ 已打卡':'📸 活动打卡'}</button>
-<button onClick={()=>setModal({type:'map',activity:a})} className="text-xs py-2 rounded-lg border border-indigo-400/40 text-indigo-300 hover:bg-indigo-400/10 transition-all">🗺 场馆地图</button>
-</div>
-</div>))}
-</div>
-
-{/* === 打卡墙 === */}
-<h3 className="text-xl font-bold text-indigo-200 mb-6">📸 活动打卡墙</h3>
-<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-{checkPosts.map((p,i)=>(
-<div key={i} className="glass-card p-5">
-<div className="flex items-center gap-2 mb-3">
-<div className={`w-8 h-8 rounded-full bg-gradient-to-r ${p.grad}`}/>
-<div><p className="text-sm font-bold">{p.user}</p><p className="text-[10px] text-indigo-400">{p.time}</p></div>
-</div>
-<p className="text-[11px] text-cyan-300/80 mb-2 truncate">📍 {p.activity}</p>
-<p className="text-sm text-indigo-200 leading-relaxed">{p.text}</p>
-<div className="mt-3 flex justify-end text-xs text-indigo-400">❤ {p.likes}</div>
-</div>))}
-</div>
-</div>
-
-{/* ============ 弹窗：到场签到 ============ */}
-{modal&&modal.type==='sign'&&(
-<div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6" onClick={closeModal}>
-<div className="glass-card p-8 max-w-md w-full page-enter" onClick={e=>e.stopPropagation()}>
-<h3 className="text-xl font-bold text-cyan-300 mb-1">📝 到场签到</h3>
-<p className="text-xs text-indigo-300 mb-5">{modal.activity.title}</p>
-<div className="bg-space-950 border border-indigo-500/30 rounded-xl p-6 mb-4 text-center">
-<div className="w-32 h-32 mx-auto rounded-xl mb-3 flex items-center justify-center text-5xl bg-[conic-gradient(from_0deg,#22d3ee,#6366f1,#d946ef,#22d3ee)] p-1">
-<div className="w-full h-full bg-space-950 rounded-lg flex items-center justify-center">
-<div className="grid grid-cols-5 gap-0.5">
-{Array.from({length:25}).map((_,i)=>(<div key={i} className="w-2 h-2" style={{background:Math.random()>0.5?'#fff':'transparent'}}/>))}
-</div>
-</div>
-</div>
-<p className="text-xs text-cyan-300 mb-1">扫描场馆 QR 码 或 输入签到码</p>
-<p className="text-[10px] text-indigo-500">签到码可在展板/工作人员处获取</p>
-</div>
-<input value={signCode} onChange={e=>setSignCode(e.target.value)} placeholder="请输入签到码（不区分大小写）" className="w-full bg-space-950 border border-indigo-500/30 rounded-xl px-4 py-3 text-sm focus:border-cyan-400 focus:outline-none uppercase mb-3"/>
-{signMsg&&<p className={`text-sm text-center mb-3 ${signMsg.includes('成功')?'text-green-300':'text-red-300'}`}>{signMsg}</p>}
-<div className="flex gap-2">
-<button onClick={closeModal} className="flex-1 btn-outline text-sm">关闭</button>
-<button onClick={()=>submitSign(modal.activity)} className="flex-1 btn-primary text-sm">确认签到</button>
-</div>
-<p className="text-[10px] text-indigo-500 text-center mt-3">演示签到码：<span className="text-cyan-400 font-mono">{modal.activity.signCode}</span></p>
-</div>
-</div>)}
-
-{/* ============ 弹窗：活动打卡 ============ */}
-{modal&&modal.type==='check'&&(
-<div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6" onClick={closeModal}>
-<div className="glass-card p-8 max-w-md w-full page-enter" onClick={e=>e.stopPropagation()}>
-<h3 className="text-xl font-bold text-pink-300 mb-1">📸 活动打卡</h3>
-<p className="text-xs text-indigo-300 mb-5">{modal.activity.title}</p>
-<div className="border-2 border-dashed border-pink-400/30 rounded-xl p-8 text-center mb-4 cursor-pointer hover:border-pink-400/60 transition-colors">
-<div className="text-4xl mb-2">📷</div>
-<p className="text-xs text-pink-300">点击上传打卡照片（可选）</p>
-<p className="text-[10px] text-indigo-500 mt-1">支持 JPG / PNG · 建议横幅图</p>
-</div>
-<textarea value={checkText} onChange={e=>setCheckText(e.target.value)} placeholder="分享你在现场的感受、收获或星空所见..." className="w-full bg-space-950 border border-indigo-500/30 rounded-xl p-3 h-24 resize-none focus:border-pink-400 focus:outline-none text-sm mb-4"/>
-<div className="flex gap-2">
-<button onClick={closeModal} className="flex-1 btn-outline text-sm">关闭</button>
-<button onClick={()=>submitCheck(modal.activity)} className="flex-1 btn-primary text-sm">发布打卡 +30 能量</button>
-</div>
-</div>
-</div>)}
-
-{/* ============ 弹窗：场馆地图指引 ============ */}
-{modal&&modal.type==='map'&&(
-<div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6" onClick={closeModal}>
-<div className="glass-card p-8 max-w-2xl w-full page-enter" onClick={e=>e.stopPropagation()}>
-<h3 className="text-xl font-bold text-indigo-300 mb-1">🗺 场馆地图指引</h3>
-<p className="text-xs text-indigo-400 mb-4">星陨宇宙天文馆 · {modal.activity.title}</p>
-<div className="relative bg-space-950 rounded-xl border border-indigo-500/30 overflow-hidden" style={{height:'380px'}}>
-<VenueMap activeId={modal.activity.mapPin}/>
-</div>
-<div className="grid grid-cols-3 gap-3 mt-4 text-xs">
-<div className="bg-space-950/50 rounded-lg p-3 border border-indigo-500/20"><span className="text-indigo-400">📍 目的地</span><div className="text-cyan-200 mt-0.5">{modal.activity.venue}</div></div>
-<div className="bg-space-950/50 rounded-lg p-3 border border-indigo-500/20"><span className="text-indigo-400">🚶 距入口</span><div className="text-cyan-200 mt-0.5">约 {modal.activity.distance} 米</div></div>
-<div className="bg-space-950/50 rounded-lg p-3 border border-indigo-500/20"><span className="text-indigo-400">⏱ 步行时长</span><div className="text-cyan-200 mt-0.5">{modal.activity.walk}</div></div>
-</div>
-<div className="mt-3 text-[11px] text-indigo-300/70 leading-relaxed bg-space-950/50 rounded-lg p-3 border border-indigo-500/20">
-<span className="text-cyan-300 font-bold">🧭 路线提示：</span>
-从主入口进入大厅 → 沿星河大道直行 → {modal.activity.mapPin.startsWith('A')?'左转进入 A 馆 · 28 星宿主题区':'右转进入 B 馆 · 大天文家主题区'} → 跟随地面星轨指引前往展厅。沿途有 NPC 礼仪官提供咨询。
-</div>
-<button onClick={closeModal} className="mt-4 w-full btn-outline text-sm">关闭地图</button>
-</div>
-</div>)}
-</PageWrapper>);
-}
-
-// 10. 陨石互动页
-function InteractPage(){
-const [msgs,setMsgs]=useState([
-{from:'meteor',text:'主人，今天的宇宙温度很适合发呆呢～ 我在你的星轨上画了一颗小花 🌸'},
-{from:'user',text:'今天感觉有点累'},
-{from:'meteor',text:'感知到你的能量波动微弱了一些... 别担心，我正在为你收集北极星附近的宁静粒子。建议今晚早点休息，明天你会感受到来自天琴座的温暖能量波 ✨'}]);
-const [input,setInput]=useState('');
-const send=()=>{if(!input.trim())return;setMsgs(m=>[...m,{from:'user',text:input}]);setInput('');
-setTimeout(()=>{setMsgs(m=>[...m,{from:'meteor',text:'收到了你的星语信号～ 让我翻翻宇宙手册... 嗯，根据今天的星宿走向，这正是积蓄能量的好时机。相信自己，你比你想象的更接近那颗星 🌟'}])},1200)};
-return(<PageWrapper>
-<div className="max-w-6xl mx-auto px-6 py-16">
-<SectionTitle title="陨石互动" sub="与你的陨石生命体对话"/>
-<div className="grid md:grid-cols-[1fr_320px] gap-6">
-{/* 聊天区 */}
-<div className="glass-card p-6 flex flex-col" style={{minHeight:'500px'}}>
-<div className="flex-1 space-y-4 overflow-y-auto mb-4">{msgs.map((m,i)=>(
-<div key={i} className={`flex ${m.from==='user'?'justify-end':'justify-start'}`}>
-<div className={`max-w-[80%] p-4 rounded-2xl text-sm ${m.from==='user'?'bg-nebula-purple/30 rounded-br-sm':'bg-space-800 border border-indigo-500/20 rounded-bl-sm'}`}>
-{m.from==='meteor'&&<span className="text-xs text-cyan-400 block mb-1">🌠 星陨·织梦者</span>}
-{m.text}</div></div>))}</div>
-<div className="flex gap-2">
-<input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder="对你的陨石说点什么..." className="flex-1 bg-space-950 border border-indigo-500/30 rounded-xl px-4 py-3 text-sm focus:border-cyan-400 focus:outline-none"/>
-<button onClick={send} className="btn-primary px-6 text-sm">发送</button></div></div>
-{/* 状态面板 */}
-<div className="space-y-4">
-<div className="glass-card p-5 text-center"><MeteorOrb size={80}/><p className="font-bold mt-3">星陨·织梦者</p></div>
-{[{label:'今日状态',value:'✨ 灵感充沛',color:'text-cyan-300'},{label:'情绪波动',value:'🌊 平静如湖',color:'text-blue-300'},{label:'宇宙温度',value:'🌡 温暖宜人',color:'text-amber-300'},{label:'能量水平',value:'⚡ 72/100',color:'text-green-300'},{label:'今日幸运方向',value:'🧭 东北方·天琴座域',color:'text-pink-300'},{label:'对主人的建议',value:'💭 今天适合创造性活动',color:'text-violet-300'},{label:'星宿走向',value:'🌀 内省→表达→治愈',color:'text-indigo-300'}].map((s,i)=>(
-<div key={i} className="glass-card p-4"><div className="text-xs text-indigo-400">{s.label}</div><div className={`text-sm font-bold mt-1 ${s.color}`}>{s.value}</div></div>))}
-</div></div></div>
-</PageWrapper>)}
-
-// 11. 社区广场页
-function CommunityPage({onNavigate}){
-const [tab,setTab]=useState('热门');
-const tabs=['热门','最新','稀有','笔记'];
-const filtered=tab==='热门'?MOCK_COMMUNITY.filter(c=>c.type==='热门').sort((a,b)=>b.likes-a.likes)
-:tab==='最新'?MOCK_COMMUNITY.filter(c=>c.type==='最新')
-:tab==='稀有'?MOCK_COMMUNITY.filter(c=>c.rarity==='传说'||c.rarity==='稀有').sort((a,b)=>{if(a.rarity===b.rarity)return b.likes-a.likes;return a.rarity==='传说'?-1:1})
-:[...MOCK_COMMUNITY].sort((a,b)=>b.likes-a.likes);
-const totalLegend=MOCK_COMMUNITY.filter(c=>c.rarity==='传说').length;
-const totalRare=MOCK_COMMUNITY.filter(c=>c.rarity==='稀有').length;
-return(<PageWrapper>
-<div className="max-w-6xl mx-auto px-6 py-16">
-<SectionTitle title="星际广场" sub="探索来自不同宇宙角落的陨石生命体"/>
-{/* 数据概览 */}
-<div className="flex gap-4 justify-center mb-8 flex-wrap text-xs">
-<div className="glass-card px-4 py-2"><span className="text-indigo-400">已收录 </span><span className="text-cyan-300 font-bold">{MOCK_COMMUNITY.length}</span><span className="text-indigo-400"> 颗</span></div>
-<div className="glass-card px-4 py-2 border-amber-400/30"><span className="text-amber-300/80">⭐ 传说级 </span><span className="text-amber-300 font-bold">{totalLegend}</span></div>
-<div className="glass-card px-4 py-2 border-purple-400/30"><span className="text-purple-300/80">💎 稀有级 </span><span className="text-purple-300 font-bold">{totalRare}</span></div>
-<div className="glass-card px-4 py-2"><span className="text-indigo-400">本榜展示 </span><span className="text-cyan-300 font-bold">{filtered.length}</span></div>
-</div>
-<div className="flex gap-2 justify-center mb-10 flex-wrap">{tabs.map(t=>(
-<button key={t} onClick={()=>setTab(t)} className={`px-5 py-2 rounded-full text-sm transition-all ${tab===t?'bg-nebula-purple/30 text-cyan-300 border border-cyan-400/30':'text-indigo-400 hover:text-white'}`}>
-{t==='热门'?'🔥':''}{t==='最新'?'🆕':''}{t==='稀有'?'💎':''}{t==='笔记'?'📓':''} {t}榜</button>))}</div>
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{filtered.map(c=>{
-const isLegend=c.rarity==='传说';
-return(
-<div key={c.meteor} onClick={()=>onNavigate('gallery')} className={`glass-card cursor-pointer transition-all relative overflow-hidden ${isLegend?'p-6 pt-10 border-amber-400/40 bg-gradient-to-br from-amber-500/[0.05] via-purple-500/[0.04] to-pink-500/[0.05] hover:border-amber-300/70 hover:shadow-[0_0_30px_rgba(251,191,36,0.28)]':c.rarity==='稀有'?'p-6 hover:border-purple-300/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)]':'p-6 hover:border-cyan-400/40'}`}>
-{isLegend&&(<>
-<div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-amber-300 to-transparent"/>
-<div className="absolute top-2 left-2"><span className="text-[9px] px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-amber-950 font-black tracking-[0.2em]" style={{boxShadow:'0 0 12px rgba(251,191,36,0.6)'}}>LEGEND</span></div>
-</>)}
-<div className="flex justify-center mb-5 pt-3" style={{minHeight:isLegend?'130px':'90px'}}>
-<MeteorOrb size={isLegend?100:78} colors={c.grad} animate={isLegend} rarity={c.rarity}/>
-</div>
-<h3 className={`font-bold text-center ${isLegend?'text-base text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-300 to-cyan-300':'text-white text-sm'}`}>{c.meteor}</h3>
-<div className="flex justify-center gap-1 mt-2 mb-3">
-<span className="tag text-[10px] py-0 px-2">{c.mbti}</span>
-<span className="tag text-[10px] py-0 px-2">{c.sign}</span>
-</div>
-<div className="flex justify-between items-center text-xs">
-<div className="flex items-center gap-2 min-w-0"><div className="w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 shrink-0"/><span className="text-indigo-300 truncate">{c.user}</span></div>
-<div className="flex items-center gap-2 shrink-0">
-<span className={`tag text-[10px] py-0 px-2 ${isLegend?'border-amber-400 text-amber-300':c.rarity==='稀有'?'border-purple-400 text-purple-300':'border-gray-500 text-gray-400'}`}>{c.rarity}</span>
-<span className="text-indigo-400">❤ {c.likes}</span>
-</div></div></div>);})}
-</div>
-{filtered.length===0&&<p className="text-center text-indigo-500 mt-12 text-sm">该榜单暂无内容</p>}
-</div></PageWrapper>)}
-
-// 12. 展馆详情页
-function GalleryPage({onNavigate}){
-const [comment,setComment]=useState('');
-const [comments,setComments]=useState([{user:'宇宙旅人A',text:'这颗陨石好美！'},{user:'银河画师',text:'希望我的也能进化到这个形态～'}]);
 return(<PageWrapper>
 <div className="max-w-5xl mx-auto px-6 py-16">
-{/* 大图展示 */}
-<div className="glass-card p-10 mb-8 text-center relative overflow-hidden">
-<div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.1),transparent)]"/>
-<div className="relative z-10">
-<MeteorOrb size={200} colors="from-violet-500 via-fuchsia-500 to-pink-500"/>
-<h1 className="mt-6 text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-pink-300">星陨·暗影</h1>
-<p className="text-indigo-400 text-sm mt-1">MTR-2026-ZX1203 · 猎户座之子</p>
-<div className="flex gap-2 justify-center mt-3"><span className="tag border-amber-400 text-amber-300">传说</span><span className="tag">INTJ</span><span className="tag">天蝎座</span></div>
-</div></div>
-<div className="grid md:grid-cols-2 gap-6">
-<div className="space-y-4">
-<div className="glass-card p-6"><h3 className="text-sm text-indigo-400 mb-2">📖 角色故事</h3>
-<p className="text-sm text-indigo-200 leading-relaxed">诞生于猎户座最深处的暗星域，这颗陨石天生拥有穿透黑暗的能力。沉默寡言但内心深处燃烧着改变宇宙的野心。它的暗影并非来自黑暗，而是浓缩了太多星光后的深邃。</p></div>
-<div className="glass-card p-6"><h3 className="text-sm text-indigo-400 mb-2">🌿 成长阶段</h3>
-<div className="flex gap-2">{['胚芽','星核','星云','恒星'].map((s,i)=>(
-<div key={i} className={`flex-1 text-center ${i<=2?'':'opacity-30'}`}><div className={`w-8 h-8 mx-auto rounded-full ${i<=2?'bg-gradient-to-br from-violet-500 to-fuchsia-500':'bg-gray-700'}`}/><p className="text-[10px] mt-1">{s}</p></div>))}</div></div>
-<div className="glass-card p-6"><h3 className="text-sm text-indigo-400 mb-2">⚡ 技能</h3>
-<div className="flex gap-2 flex-wrap"><span className="tag text-cyan-300">暗影穿梭 Lv.3</span><span className="tag text-cyan-300">星轨预言 Lv.2</span><span className="tag text-cyan-300">引力操控 Lv.2</span></div></div>
-<div className="glass-card p-6"><h3 className="text-sm text-indigo-400 mb-2">🔭 主人的观星笔记</h3>
-<p className="text-sm text-indigo-200">"今夜猎户座格外明亮，我仿佛听到了暗影在低语..."</p></div>
-</div>
-<div className="space-y-4">
-<div className="glass-card p-6"><h3 className="text-sm text-indigo-400 mb-2">🌐 宇宙关系图谱</h3>
-<div className="flex flex-col items-center py-4 space-y-2">
-<div className="glass-card px-4 py-2 text-xs">猎户座之子（主人）</div>
-<div className="text-indigo-500">↕ 羁绊值 89</div>
-<MeteorOrb size={50} colors="from-violet-500 to-fuchsia-500" animate={false}/>
-<div className="text-indigo-500">↕</div>
-<div className="flex gap-4">{['星陨·烈焰','星陨·幽蓝'].map(n=><div key={n} className="glass-card px-3 py-1 text-xs">{n}</div>)}</div>
-<p className="text-[10px] text-indigo-500 mt-1">宇宙邻居</p></div></div>
-{/* 留言区 */}
-<div className="glass-card p-6">
-<h3 className="text-sm text-indigo-400 mb-3">💬 访客留言 ({comments.length})</h3>
-<div className="space-y-3 mb-4 max-h-48 overflow-y-auto">{comments.map((c,i)=>(
-<div key={i} className="bg-space-950/50 p-3 rounded-lg text-xs"><span className="text-cyan-300 font-bold">{c.user}：</span><span className="text-indigo-200">{c.text}</span></div>))}</div>
-<div className="flex gap-2">
-<input value={comment} onChange={e=>setComment(e.target.value)} placeholder="留下你的星语..." className="flex-1 bg-space-950 border border-indigo-500/30 rounded-lg px-3 py-2 text-xs focus:border-cyan-400 focus:outline-none"/>
-<button onClick={()=>{if(comment.trim()){setComments(c=>[...c,{user:'我',text:comment}]);setComment('')}}} className="btn-outline text-xs px-4 py-2">发送</button>
-</div></div></div></div>
-<button onClick={()=>onNavigate('community')} className="mt-8 text-sm text-indigo-400 hover:text-cyan-300 transition-colors">← 返回星际广场</button>
-</div></PageWrapper>)}
+<SectionTitle title="积分商城" sub="用星星能量兑换天文馆专属奖励"/>
 
+{/* 能量余额 */}
+<div className="glass-card p-5 mb-8 flex items-center justify-between">
+<div>
+<div className="text-xs text-indigo-400 mb-1">当前星星能量</div>
+<div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-nebula-purple">⚡ {energy}</div>
+</div>
+<div className="text-right">
+<div className="text-xs text-indigo-400 mb-2">答题赚取更多能量</div>
+<button onClick={()=>onNavigate('quiz')} className="btn-outline text-xs py-2 px-4">📝 去答题</button>
+</div>
+</div>
+
+{/* 分类 */}
+<div className="flex gap-2 justify-center mb-8 flex-wrap">
+{cats.map(c=>(
+<button key={c} onClick={()=>setCat(c)} className={`px-5 py-2 rounded-full text-sm font-bold transition-all ${cat===c?'bg-gradient-to-r from-nebula-purple to-cyan-400 text-white shadow-glow':'glass-card text-indigo-300 hover:text-cyan-300'}`}>
+{c}</button>))}
+</div>
+
+{/* 商品网格 */}
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+{filtered.map(item=>{
+const canAfford=energy>=item.cost;
+const isRedeemed=redeemed[item.id];
+return(
+<div key={item.id} className={`glass-card p-5 flex flex-col transition-all ${isRedeemed?'opacity-60':''}`}>
+<div className="text-4xl text-center mb-3">{item.icon}</div>
+<h3 className="font-bold text-sm text-white mb-1 text-center">{item.name}</h3>
+<p className="text-xs text-indigo-400 mb-3 text-center leading-relaxed flex-1">{item.desc}</p>
+<div className="flex items-center justify-between mb-3">
+<span className={`tag text-[10px] py-0.5 px-2 ${CAT_COLORS[item.cat]}`}>{item.cat}</span>
+<span className="text-xs text-indigo-400">余 {item.left} 件</span>
+</div>
+<div className="text-center font-bold mb-3">
+<span className={canAfford&&!isRedeemed?'text-cyan-300':'text-indigo-500'}>⚡ {item.cost}</span>
+</div>
+<button
+disabled={isRedeemed||!canAfford}
+onClick={()=>!isRedeemed&&canAfford&&setModal(item)}
+className={`w-full text-xs py-2 rounded-lg font-medium transition-all ${isRedeemed?'border border-green-400 text-green-300':canAfford?'btn-primary':'border border-indigo-500/30 text-indigo-500 cursor-not-allowed'}`}>
+{isRedeemed?'✓ 已兑换':canAfford?'立即兑换':'能量不足'}
+</button>
+</div>);})}
+</div>
+
+{/* 能量不足提示 */}
+<div className="mt-10 glass-card p-6 border-indigo-500/10">
+<h3 className="text-sm font-bold text-indigo-300 mb-3">⚡ 如何获取更多星星能量？</h3>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-indigo-400">
+<div className="flex items-start gap-2"><span className="text-cyan-300">📝</span><span>参与<button onClick={()=>onNavigate('quiz')} className="text-cyan-300 underline underline-offset-2 mx-1">天文知识答题</button>，每题答对 +20 能量</span></div>
+<div className="flex items-start gap-2"><span className="text-pink-300">🌱</span><span>进入<button onClick={()=>onNavigate('cultivate')} className="text-pink-300 underline underline-offset-2 mx-1">陨石培育舱</button>，手动注入能量 +15/次</span></div>
+</div>
+</div>
+
+{/* 兑换确认弹窗 */}
+{modal&&(
+<div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6" onClick={()=>setModal(null)}>
+<div className="glass-card p-8 max-w-sm w-full page-enter" onClick={e=>e.stopPropagation()}>
+<div className="text-5xl text-center mb-4">{modal.icon}</div>
+<h3 className="text-xl font-bold text-cyan-300 text-center mb-1">{modal.name}</h3>
+<p className="text-xs text-indigo-300 text-center mb-6">{modal.desc}</p>
+<div className="space-y-3 mb-6">
+<div className="flex justify-between items-center glass-card p-4">
+<span className="text-sm text-indigo-400">所需能量</span>
+<span className="text-xl font-black text-cyan-300">⚡ {modal.cost}</span>
+</div>
+<div className="flex justify-between items-center glass-card p-4">
+<span className="text-sm text-indigo-400">兑换后余额</span>
+<span className="text-xl font-black text-amber-300">⚡ {energy-modal.cost}</span>
+</div>
+</div>
+<div className="flex gap-3">
+<button onClick={()=>setModal(null)} className="flex-1 btn-outline text-sm">取消</button>
+<button onClick={()=>confirm(modal)} className="flex-1 btn-primary text-sm">确认兑换</button>
+</div>
+</div>
+</div>)}
+
+{/* Toast */}
+{toast&&(
+<div className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[200] glass-card px-6 py-3 text-sm text-green-300 border-green-400/40 whitespace-nowrap shadow-glow page-enter">
+{toast}
+</div>)}
+</div>
+</PageWrapper>)}
 
 // ========== 主应用 ==========
 function App(){
 const [page,setPage]=useState('home');
 const [moreOpen,setMoreOpen]=useState(false);
+const [energy,setEnergy]=useState(62);
 const navigate=(p)=>{setPage(p);setMoreOpen(false);window.scrollTo({top:0,behavior:'smooth'})};
+const addEnergy=(n)=>setEnergy(e=>e+n);
+const spendEnergy=(n)=>setEnergy(e=>Math.max(e-n,0));
 return(<>
 <MobileTopBar page={page}/>
 <Navbar current={page} onNavigate={navigate}/>
 <MoreMenuSheet open={moreOpen} onClose={()=>setMoreOpen(false)} onNavigate={navigate} current={page}/>
-{page==='home'&&<HomePage onNavigate={navigate}/>}
+{page==='home'&&<HomePage onNavigate={navigate} energy={energy}/>}
 {page==='create'&&<CreatePage onNavigate={navigate}/>}
 {page==='generating'&&<GeneratingPage onNavigate={navigate}/>}
 {page==='result'&&<ResultPage onNavigate={navigate}/>}
-{page==='archive'&&<ArchivePage onNavigate={navigate}/>}
-{page==='cultivate'&&<CultivatePage onNavigate={navigate}/>}
-{page==='quiz'&&<QuizPage onNavigate={navigate}/>}
-{page==='notes'&&<NotesPage/>}
-{page==='activities'&&<ActivitiesPage/>}
-{page==='interact'&&<InteractPage/>}
-{page==='community'&&<CommunityPage onNavigate={navigate}/>}
-{page==='gallery'&&<GalleryPage onNavigate={navigate}/>}
+{page==='archive'&&<ArchivePage onNavigate={navigate} energy={energy}/>}
+{page==='cultivate'&&<CultivatePage onNavigate={navigate} energy={energy} onAddEnergy={addEnergy}/>}
+{page==='quiz'&&<QuizPage onNavigate={navigate} onAddEnergy={addEnergy}/>}
+{page==='shop'&&<ShopPage onNavigate={navigate} energy={energy} onSpendEnergy={spendEnergy}/>}
 <GlobalFooter/>
 <MobileTabBar current={page} onNavigate={navigate} moreOpen={moreOpen} setMoreOpen={setMoreOpen}/>
 </>)}
