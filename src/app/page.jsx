@@ -1,11 +1,16 @@
+'use client';
 import { useState, useEffect, useRef } from 'react';
-import { getStage } from '../constants';
-import MeteorOrb from '../components/MeteorOrb';
-import PlanetSphere from '../components/PlanetSphere';
-import PageWrapper from '../components/PageWrapper';
-import { SectionTitle } from '../components/SharedUI';
+import { useRouter } from 'next/navigation';
+import { useEnergy } from '@/lib/energy-context';
+import { getStage } from '@/lib/constants';
+import MeteorOrb from '@/components/MeteorOrb';
+import PlanetSphere from '@/components/PlanetSphere';
+import PageWrapper from '@/components/PageWrapper';
+import { SectionTitle } from '@/components/SharedUI';
 
-export default function HomePage({ onNavigate, energy }) {
+export default function HomePage() {
+  const router = useRouter();
+  const { energy } = useEnergy();
   const containerRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
@@ -42,7 +47,6 @@ export default function HomePage({ onNavigate, energy }) {
 
   return (
     <PageWrapper>
-      {/* HERO */}
       <section ref={containerRef} className="relative min-h-[90dvh] flex flex-col items-center justify-center text-center px-5 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
           <div className="hero-aurora" style={{
@@ -84,17 +88,16 @@ export default function HomePage({ onNavigate, energy }) {
             铸造成唯一的<span className="text-white/75 font-medium">陨石生命体</span>
           </p>
           <div className="mt-10 flex gap-3 justify-center flex-wrap">
-            <button onClick={() => onNavigate('create')} className="btn-primary" style={{ padding: '12px 28px', fontSize: '15px' }}>
+            <button onClick={() => router.push('/create')} className="btn-primary" style={{ padding: '12px 28px', fontSize: '15px' }}>
               🌠 立即生成我的陨石
             </button>
-            <button onClick={() => onNavigate('shop')} className="btn-outline" style={{ padding: '12px 24px', fontSize: '15px' }}>
+            <button onClick={() => router.push('/shop')} className="btn-outline" style={{ padding: '12px 24px', fontSize: '15px' }}>
               积分商城
             </button>
           </div>
         </div>
       </section>
 
-      {/* EXAMPLE CARDS */}
       <section className="max-w-5xl mx-auto px-5 py-20">
         <SectionTitle eyebrow="已诞生的星陨" title="每颗都独一无二" sub="承载着主人的灵魂印记" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -113,7 +116,6 @@ export default function HomePage({ onNavigate, energy }) {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
       <section className="max-w-4xl mx-auto px-5 py-20">
         <SectionTitle eyebrow="铸造逻辑" title="六维参数，AI 推演专属陨石" />
         <div className="flex flex-wrap justify-center items-center gap-2 text-center">
@@ -128,20 +130,19 @@ export default function HomePage({ onNavigate, energy }) {
         </div>
       </section>
 
-      {/* GROWTH */}
       <section className="max-w-5xl mx-auto px-5 py-20">
         <SectionTitle eyebrow="成长系统" title="答题积累能量，解锁华丽形态" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
-            { icon: '📝', title: '天文答题', desc: '回答天文知识题，每题答对 +20 星星能量', action: '去答题', page: 'quiz' },
-            { icon: '🌱', title: '陨石养成', desc: '持续喂养让陨石从胚芽进化到超新星形态', action: '去养成', page: 'cultivate' },
-            { icon: '🎁', title: '积分兑换', desc: '用积累的星星能量兑换天文馆专属奖品', action: '去商城', page: 'shop' },
+            { icon: '📝', title: '天文答题', desc: '回答天文知识题，每题答对 +20 星星能量', action: '去答题', path: '/quiz' },
+            { icon: '🌱', title: '陨石养成', desc: '持续喂养让陨石从胚芽进化到超新星形态', action: '去养成', path: '/cultivate' },
+            { icon: '🎁', title: '积分兑换', desc: '用积累的星星能量兑换天文馆专属奖品', action: '去商城', path: '/shop' },
           ].map((item, i) => (
             <div key={i} className="card p-6 text-center">
               <div className="text-3xl mb-3">{item.icon}</div>
               <h3 className="font-medium text-white/82 mb-2 text-sm">{item.title}</h3>
               <p className="text-xs text-white/35 mb-5 leading-relaxed">{item.desc}</p>
-              <button onClick={() => onNavigate(item.page)} className="btn-outline text-xs" style={{ padding: '8px 18px' }}>
+              <button onClick={() => router.push(item.path)} className="btn-outline text-xs" style={{ padding: '8px 18px' }}>
                 {item.action} →
               </button>
             </div>
@@ -149,7 +150,6 @@ export default function HomePage({ onNavigate, energy }) {
         </div>
       </section>
 
-      {/* ARCHIVE */}
       <section className="max-w-3xl mx-auto px-5 py-20 text-center">
         <SectionTitle eyebrow="永生机制" title="宇宙档案 · 永恒存在" />
         <div className="card p-10 text-white/40 text-sm leading-relaxed">

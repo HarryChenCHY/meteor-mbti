@@ -1,9 +1,12 @@
+'use client';
 import { useState } from 'react';
-import { MBTI_LIST, SIGNS, BLOODS, STYLES, FORMS, RENDERS, PTYPES } from '../constants';
-import PageWrapper from '../components/PageWrapper';
-import { SectionTitle } from '../components/SharedUI';
+import { useRouter } from 'next/navigation';
+import { MBTI_LIST, SIGNS, BLOODS, STYLES, FORMS, RENDERS, PTYPES } from '@/lib/constants';
+import PageWrapper from '@/components/PageWrapper';
+import { SectionTitle } from '@/components/SharedUI';
 
-export default function CreatePage({ onNavigate }) {
+export default function CreatePage() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({ nickname: '', mbti: '', sign: '', blood: '', age: '', style: '', form: '', render: '', ptype: '' });
   const upd = (k, v) => setForm({ ...form, [k]: v });
@@ -134,7 +137,7 @@ export default function CreatePage({ onNavigate }) {
                   </div>
                 ))}
               </div>
-              <button onClick={() => onNavigate('generating')} className="btn-primary w-full justify-center mt-4" style={{ padding: '14px', fontSize: '15px' }}>
+              <button onClick={() => router.push('/generating')} className="btn-primary w-full justify-center mt-4" style={{ padding: '14px', fontSize: '15px' }}>
                 🌠 开始铸造我的陨石人格
               </button>
             </div>
