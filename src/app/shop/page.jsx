@@ -6,6 +6,7 @@ import { SHOP_ITEMS, CAT_COLORS, STAGE_SKINS, STAGES, getStage, getStageProgress
 import MeteorOrb from '@/components/MeteorOrb';
 import PageWrapper from '@/components/PageWrapper';
 import { SectionTitle } from '@/components/SharedUI';
+import GlowCard from '@/components/GlowCard';
 
 export default function ShopPage() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function ShopPage() {
       <div className="max-w-5xl mx-auto px-5 py-16">
         <SectionTitle eyebrow="积分商城" title="用星星能量兑换专属奖励" />
 
-        <div className="card p-5 mb-6 flex items-center justify-between">
+        <GlowCard className="p-5 mb-6 flex items-center justify-between">
           <div>
             <div className="text-xs text-white/30 mb-1.5 tracking-wide">当前星星能量</div>
             <div className="text-3xl font-bold text-white/88 tracking-tight">⚡ {energy}</div>
@@ -39,9 +40,9 @@ export default function ShopPage() {
             <div className="text-xs text-white/25 mb-2">答题赚取更多能量</div>
             <button onClick={() => router.push('/quiz')} className="btn-outline text-xs" style={{ padding: '8px 16px' }}>📝 去答题</button>
           </div>
-        </div>
+        </GlowCard>
 
-        <div className="card p-5 mb-6">
+        <GlowCard className="p-5 mb-6">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="font-medium text-sm text-white/72">✨ 陨石皮肤图鉴</h3>
@@ -73,7 +74,7 @@ export default function ShopPage() {
               : <span className="text-white/50 ml-1">· 已达最高形态 🌟</span>
             }
           </p>
-        </div>
+        </GlowCard>
 
         <div className="flex gap-2 justify-center mb-6 flex-wrap">
           {cats.map(c => (
@@ -86,7 +87,8 @@ export default function ShopPage() {
             const canAfford = energy >= item.cost;
             const isRedeemed = redeemed[item.id];
             return (
-              <div key={item.id} className={`card p-4 flex flex-col transition-all ${isRedeemed ? 'opacity-55' : ''}`}>
+              <div key={item.id} className={`transition-all ${isRedeemed ? 'opacity-55' : ''}`}>
+                <GlowCard className="p-4 flex flex-col h-full">
                 <div className="text-3xl text-center mb-3">{item.icon}</div>
                 <h3 className="font-medium text-sm text-white/82 mb-1 text-center">{item.name}</h3>
                 <p className="text-xs text-white/32 mb-3 text-center leading-relaxed flex-1">{item.desc}</p>
@@ -106,18 +108,19 @@ export default function ShopPage() {
                   }`}>
                   {isRedeemed ? '✓ 已兑换' : canAfford ? '立即兑换' : '能量不足'}
                 </button>
+                </GlowCard>
               </div>
             );
           })}
         </div>
 
-        <div className="mt-8 card p-5" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+        <GlowCard className="mt-8 p-5">
           <h3 className="text-sm font-medium text-white/38 mb-2.5">⚡ 如何获取星星能量？</h3>
           <div className="flex items-start gap-2 text-xs text-white/30">
             <span>📝</span>
             <span>参与<button onClick={() => router.push('/quiz')} className="text-white/55 underline underline-offset-2 mx-1 hover:text-white/75 transition-colors">天文知识答题</button>，每题答对 +20 星星能量。答题是积累能量的唯一途径。</span>
           </div>
-        </div>
+        </GlowCard>
 
         {modal && (
           <div className="fixed inset-0 z-[100] bg-black/75 backdrop-blur-sm flex items-center justify-center p-5"

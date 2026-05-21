@@ -112,11 +112,13 @@ export default function PlanetSphere({ size, style = 'pearl', ring = false, star
           {Array.from({ length: starCount }).map((_, i) => {
             const a = (i / starCount) * Math.PI * 2;
             const sz = i % 3 === 0 ? 4 : 2.5;
+            const left = starR + Math.cos(a) * starR - sz / 2;
+            const top = starR + Math.sin(a) * starR - sz / 2;
             return (
-              <div key={i} style={{
+              <div key={i} suppressHydrationWarning style={{
                 position: 'absolute',
-                left: `calc(50% + ${Math.cos(a) * starR}px - ${sz / 2}px)`,
-                top: `calc(50% + ${Math.sin(a) * starR}px - ${sz / 2}px)`,
+                left,
+                top,
                 width: sz, height: sz, borderRadius: '50%',
                 background: 'rgba(212,188,255,0.88)',
                 boxShadow: `0 0 ${sz * 2.5}px rgba(192,162,255,0.72)`,

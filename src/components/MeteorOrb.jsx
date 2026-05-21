@@ -3,85 +3,95 @@ export default function MeteorOrb({ size = 160, glow = true, animate = true, rar
   const lvl = level !== undefined ? level : (rarity === '传说' ? 4 : rarity === '稀有' ? 2 : 0);
 
   const sphereDefs = [
-    // 0: Primordial dark stone
+    // 0: Void Crimson — dark mysterious with crimson-violet aurora
     {
-      base: `radial-gradient(circle at 32% 27%, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.04) 12%, transparent 24%),
-            radial-gradient(ellipse 70% 55% at 36% 32%, rgba(130,90,200,0.22) 0%, transparent 75%),
-            radial-gradient(circle at 66% 70%, rgba(85,60,175,0.16) 0%, transparent 42%),
-            radial-gradient(circle, #1e1428 0%, #100c1c 55%, #06040c 100%)`,
-      boxShadow: `0 0 ${size * .45}px rgba(110,75,200,0.12), inset 0 -${Math.round(size * .06)}px ${Math.round(size * .12)}px rgba(0,0,0,.7)`,
-      glowGrad: `radial-gradient(circle, rgba(110,75,200,0.18) 0%, transparent 68%)`,
-      ring: null,
+      base: `radial-gradient(circle at 30% 25%, rgba(255,200,220,0.32) 0%, rgba(255,120,160,0.10) 14%, transparent 26%),
+            radial-gradient(ellipse 68% 52% at 36% 32%, rgba(200,50,120,0.38) 0%, transparent 65%),
+            radial-gradient(circle at 65% 68%, rgba(140,30,80,0.30) 0%, transparent 42%),
+            radial-gradient(circle at 50% 50%, rgba(100,20,180,0.18) 0%, transparent 70%),
+            radial-gradient(circle, #2a0818 0%, #160410 55%, #06020a 100%)`,
+      boxShadow: `0 0 ${size * .65}px rgba(200,40,100,0.42), 0 0 ${size * .3}px rgba(120,20,180,0.25), inset 0 -${Math.round(size * .06)}px ${Math.round(size * .12)}px rgba(0,0,0,.7)`,
+      glowGrad: `radial-gradient(circle, rgba(200,40,100,0.42) 0%, rgba(120,20,180,0.20) 45%, transparent 68%)`,
+      ring: { color: 'rgba(220,60,120,0.32)', glow: 'rgba(220,60,120,0.65)', dur: '20s', r: 1.22, dots: [{ a: Math.PI * 0.7, s: 5, c: 'rgba(255,90,140,0.95)', g: 'rgba(220,55,110,0.82)' }] },
+      swirl: `conic-gradient(from 0deg, transparent 0%, rgba(200,50,120,0.18) 15%, transparent 30%, rgba(120,20,180,0.12) 58%, transparent 75%, rgba(200,50,120,0.10) 90%, transparent 100%)`,
     },
-    // 1: Star Core — ice blue
+    // 1: Star Core — vivid ice blue
     {
-      base: `radial-gradient(circle at 30% 25%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 14%, transparent 26%),
-            radial-gradient(ellipse 65% 55% at 36% 33%, rgba(75,195,255,0.28) 0%, transparent 72%),
-            radial-gradient(circle at 68% 72%, rgba(25,155,240,0.22) 0%, transparent 42%),
-            radial-gradient(circle, #0c1c30 0%, #060f1e 58%, #020508 100%)`,
-      boxShadow: `0 0 ${size * .5}px rgba(40,175,255,0.22), inset 0 -${Math.round(size * .06)}px ${Math.round(size * .12)}px rgba(0,0,0,.7)`,
-      glowGrad: `radial-gradient(circle, rgba(40,175,255,0.22) 0%, transparent 68%)`,
-      ring: { color: 'rgba(55,195,255,0.2)', glow: 'rgba(55,195,255,0.5)', dur: '18s', r: 1.22, dots: [{ a: 0, s: 5, c: 'rgba(90,220,255,0.95)', g: 'rgba(55,195,255,0.8)' }] },
+      base: `radial-gradient(circle at 30% 25%, rgba(255,255,255,0.45) 0%, rgba(180,235,255,0.16) 14%, transparent 26%),
+            radial-gradient(ellipse 65% 55% at 36% 33%, rgba(55,195,255,0.55) 0%, transparent 68%),
+            radial-gradient(circle at 68% 72%, rgba(15,145,240,0.42) 0%, transparent 42%),
+            radial-gradient(circle at 45% 42%, rgba(100,220,255,0.22) 0%, transparent 55%),
+            radial-gradient(circle, #081828 0%, #040e1c 58%, #020508 100%)`,
+      boxShadow: `0 0 ${size * .68}px rgba(40,185,255,0.52), 0 0 ${size * .3}px rgba(80,210,255,0.28), inset 0 -${Math.round(size * .06)}px ${Math.round(size * .12)}px rgba(0,0,0,.7)`,
+      glowGrad: `radial-gradient(circle, rgba(40,185,255,0.52) 0%, rgba(80,210,255,0.22) 42%, transparent 68%)`,
+      ring: { color: 'rgba(55,205,255,0.38)', glow: 'rgba(55,205,255,0.72)', dur: '16s', r: 1.22, dots: [
+        { a: 0, s: 6, c: 'rgba(110,230,255,0.97)', g: 'rgba(55,205,255,0.88)' },
+        { a: Math.PI * 1.3, s: 4, c: 'rgba(80,215,255,0.88)', g: 'rgba(45,190,255,0.72)' },
+      ]},
+      swirl: `conic-gradient(from 0deg, transparent 0%, rgba(55,205,255,0.18) 12%, transparent 26%, rgba(15,145,240,0.12) 55%, transparent 72%)`,
     },
-    // 2: Nebula — purple-pink
+    // 2: Nebula — vivid purple-pink
     {
-      base: `radial-gradient(circle at 30% 25%, rgba(255,255,255,0.2) 0%, rgba(255,200,255,0.06) 15%, transparent 28%),
-            radial-gradient(ellipse 65% 58% at 40% 35%, rgba(215,95,255,0.3) 0%, transparent 70%),
-            radial-gradient(circle at 62% 66%, rgba(135,45,220,0.28) 0%, transparent 42%),
-            radial-gradient(circle, #1a0828 0%, #0e0516 58%, #040210 100%)`,
-      boxShadow: `0 0 ${size * .55}px rgba(175,58,255,0.28), inset 0 -${Math.round(size * .06)}px ${Math.round(size * .12)}px rgba(0,0,0,.7)`,
-      glowGrad: `radial-gradient(circle, rgba(175,58,255,0.28) 0%, transparent 68%)`,
+      base: `radial-gradient(circle at 30% 25%, rgba(255,255,255,0.42) 0%, rgba(255,180,255,0.14) 15%, transparent 28%),
+            radial-gradient(ellipse 65% 58% at 40% 35%, rgba(225,85,255,0.58) 0%, transparent 65%),
+            radial-gradient(circle at 62% 66%, rgba(145,35,230,0.48) 0%, transparent 42%),
+            radial-gradient(circle at 50% 45%, rgba(200,80,255,0.22) 0%, transparent 60%),
+            radial-gradient(circle, #1e0630 0%, #100418 58%, #040110 100%)`,
+      boxShadow: `0 0 ${size * .72}px rgba(190,55,255,0.55), 0 0 ${size * .32}px rgba(240,100,255,0.28), inset 0 -${Math.round(size * .06)}px ${Math.round(size * .12)}px rgba(0,0,0,.7)`,
+      glowGrad: `radial-gradient(circle, rgba(190,55,255,0.55) 0%, rgba(240,100,255,0.22) 42%, transparent 68%)`,
       ring: {
-        color: 'rgba(195,75,255,0.22)', glow: 'rgba(195,75,255,0.55)', dur: '14s', r: 1.24,
+        color: 'rgba(210,75,255,0.42)', glow: 'rgba(210,75,255,0.75)', dur: '13s', r: 1.24,
         dots: [
-          { a: 0, s: 5.5, c: 'rgba(225,105,255,0.95)', g: 'rgba(200,80,255,0.8)' },
-          { a: Math.PI, s: 4, c: 'rgba(165,75,225,0.88)', g: 'rgba(150,55,210,0.7)' },
+          { a: 0, s: 6.5, c: 'rgba(240,110,255,0.97)', g: 'rgba(210,80,255,0.85)' },
+          { a: Math.PI, s: 5, c: 'rgba(180,70,235,0.92)', g: 'rgba(160,50,220,0.78)' },
         ]
       },
-      swirl: `conic-gradient(from 0deg, transparent 0%, rgba(215,95,255,0.16) 14%, transparent 28%, rgba(135,45,220,0.12) 54%, transparent 70%, rgba(200,80,255,0.1) 88%, transparent 100%)`,
+      swirl: `conic-gradient(from 0deg, transparent 0%, rgba(225,85,255,0.22) 14%, transparent 28%, rgba(145,35,230,0.16) 54%, transparent 70%, rgba(210,80,255,0.14) 88%, transparent 100%)`,
     },
-    // 3: Star — amber solar
+    // 3: Star — blazing amber solar
     {
-      base: `radial-gradient(circle at 28% 22%, rgba(255,255,255,0.5) 0%, rgba(255,225,110,0.22) 14%, transparent 30%),
-            radial-gradient(ellipse 68% 58% at 38% 33%, rgba(255,178,48,0.44) 0%, transparent 70%),
-            radial-gradient(circle at 65% 68%, rgba(255,98,18,0.36) 0%, transparent 44%),
-            radial-gradient(circle, #201002 0%, #140800 58%, #060200 100%)`,
-      boxShadow: `0 0 ${size * .62}px rgba(255,155,28,0.38), inset 0 -${Math.round(size * .06)}px ${Math.round(size * .12)}px rgba(0,0,0,.7)`,
-      glowGrad: `radial-gradient(circle, rgba(255,155,28,0.38) 0%, transparent 68%)`,
+      base: `radial-gradient(circle at 28% 22%, rgba(255,255,255,0.72) 0%, rgba(255,235,130,0.34) 14%, transparent 30%),
+            radial-gradient(ellipse 68% 58% at 38% 33%, rgba(255,188,38,0.68) 0%, transparent 68%),
+            radial-gradient(circle at 65% 68%, rgba(255,108,12,0.55) 0%, transparent 44%),
+            radial-gradient(circle at 48% 40%, rgba(255,215,60,0.28) 0%, transparent 55%),
+            radial-gradient(circle, #241202 0%, #160800 58%, #060200 100%)`,
+      boxShadow: `0 0 ${size * .78}px rgba(255,165,22,0.62), 0 0 ${size * .38}px rgba(255,120,10,0.38), inset 0 -${Math.round(size * .06)}px ${Math.round(size * .12)}px rgba(0,0,0,.7)`,
+      glowGrad: `radial-gradient(circle, rgba(255,165,22,0.62) 0%, rgba(255,120,10,0.28) 42%, transparent 68%)`,
       ring: {
-        color: 'rgba(255,175,45,0.28)', glow: 'rgba(255,175,45,0.6)', dur: '10s', r: 1.26,
+        color: 'rgba(255,185,38,0.45)', glow: 'rgba(255,185,38,0.80)', dur: '9s', r: 1.26,
         dots: [
-          { a: 0, s: 6, c: 'rgba(255,205,65,0.97)', g: 'rgba(255,185,45,0.85)' },
-          { a: Math.PI * .5, s: 4.5, c: 'rgba(255,165,40,0.9)', g: 'rgba(255,140,30,0.75)' },
-          { a: Math.PI, s: 5, c: 'rgba(255,140,28,0.88)', g: 'rgba(255,120,22,0.72)' },
-          { a: Math.PI * 1.5, s: 4, c: 'rgba(255,185,50,0.85)', g: 'rgba(255,160,38,0.7)' },
+          { a: 0, s: 7, c: 'rgba(255,215,65,0.98)', g: 'rgba(255,195,45,0.90)' },
+          { a: Math.PI * .5, s: 5, c: 'rgba(255,175,35,0.92)', g: 'rgba(255,150,25,0.80)' },
+          { a: Math.PI, s: 6, c: 'rgba(255,150,22,0.92)', g: 'rgba(255,125,15,0.78)' },
+          { a: Math.PI * 1.5, s: 5, c: 'rgba(255,195,48,0.90)', g: 'rgba(255,170,35,0.78)' },
         ]
       },
-      swirl: `conic-gradient(from 0deg, transparent 0%, rgba(255,200,50,0.14) 12%, transparent 25%, transparent)`,
+      swirl: `conic-gradient(from 0deg, transparent 0%, rgba(255,210,50,0.22) 12%, transparent 25%, rgba(255,108,12,0.14) 50%, transparent 65%)`,
     },
-    // 4: Supernova
+    // 4: Supernova — transcendent
     {
-      base: `radial-gradient(circle at 28% 21%, rgba(255,255,255,0.8) 0%, rgba(200,240,255,0.38) 14%, transparent 32%),
-            radial-gradient(ellipse 70% 60% at 44% 40%, rgba(158,218,255,0.45) 0%, transparent 68%),
-            radial-gradient(circle at 62% 62%, rgba(178,98,255,0.4) 0%, transparent 46%),
-            radial-gradient(circle, #080c16 0%, #04060e 58%, #020308 100%)`,
-      boxShadow: `0 0 ${size * .72}px rgba(178,218,255,0.45), 0 0 ${size * .35}px rgba(198,98,255,0.32), inset 0 -${Math.round(size * .06)}px ${Math.round(size * .12)}px rgba(0,0,0,.7)`,
-      glowGrad: `radial-gradient(circle, rgba(178,218,255,0.42) 0%, rgba(198,98,255,0.22) 45%, transparent 68%)`,
+      base: `radial-gradient(circle at 28% 21%, rgba(255,255,255,0.95) 0%, rgba(215,248,255,0.55) 14%, transparent 32%),
+            radial-gradient(ellipse 70% 60% at 44% 40%, rgba(168,228,255,0.65) 0%, transparent 65%),
+            radial-gradient(circle at 62% 62%, rgba(198,98,255,0.58) 0%, transparent 46%),
+            radial-gradient(circle at 30% 60%, rgba(100,180,255,0.28) 0%, transparent 50%),
+            radial-gradient(circle, #060a14 0%, #03060c 58%, #020308 100%)`,
+      boxShadow: `0 0 ${size * .88}px rgba(178,228,255,0.65), 0 0 ${size * .48}px rgba(208,98,255,0.48), inset 0 -${Math.round(size * .06)}px ${Math.round(size * .12)}px rgba(0,0,0,.7)`,
+      glowGrad: `radial-gradient(circle, rgba(178,228,255,0.62) 0%, rgba(208,98,255,0.32) 45%, transparent 68%)`,
       ring: {
-        color: 'rgba(178,218,255,0.28)', glow: 'rgba(178,218,255,0.65)', dur: '9s', r: 1.28,
+        color: 'rgba(188,228,255,0.42)', glow: 'rgba(188,228,255,0.82)', dur: '8s', r: 1.28,
         dots: [
-          { a: 0, s: 6, c: 'rgba(205,240,255,0.97)', g: 'rgba(178,218,255,0.88)' },
-          { a: Math.PI, s: 5, c: 'rgba(185,205,255,0.92)', g: 'rgba(165,188,255,0.78)' },
+          { a: 0, s: 7, c: 'rgba(215,248,255,0.98)', g: 'rgba(188,228,255,0.92)' },
+          { a: Math.PI, s: 6, c: 'rgba(195,215,255,0.95)', g: 'rgba(175,198,255,0.82)' },
         ]
       },
       ring2: {
-        color: 'rgba(200,98,255,0.2)', glow: 'rgba(200,98,255,0.5)', dur: '14s reverse', r: .88,
+        color: 'rgba(210,98,255,0.32)', glow: 'rgba(210,98,255,0.68)', dur: '13s reverse', r: .88,
         dots: [
-          { a: Math.PI * .5, s: 4.5, c: 'rgba(220,145,255,0.9)', g: 'rgba(200,98,255,0.78)' },
-          { a: Math.PI * 1.5, s: 4, c: 'rgba(150,195,255,0.85)', g: 'rgba(130,175,255,0.72)' },
+          { a: Math.PI * .5, s: 5.5, c: 'rgba(230,155,255,0.95)', g: 'rgba(210,105,255,0.85)' },
+          { a: Math.PI * 1.5, s: 5, c: 'rgba(160,205,255,0.90)', g: 'rgba(140,185,255,0.78)' },
         ]
       },
-      swirl: `conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.14) 8%, transparent 18%, rgba(200,240,255,0.1) 40%, transparent 52%, transparent)`,
+      swirl: `conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.20) 8%, transparent 18%, rgba(200,248,255,0.15) 40%, transparent 52%, rgba(210,98,255,0.10) 72%, transparent 85%)`,
     },
   ];
 

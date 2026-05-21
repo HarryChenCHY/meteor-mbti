@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useEnergy } from '@/lib/energy-context';
 import { getStage } from '@/lib/constants';
@@ -7,6 +7,8 @@ import MeteorOrb from '@/components/MeteorOrb';
 import PlanetSphere from '@/components/PlanetSphere';
 import PageWrapper from '@/components/PageWrapper';
 import { SectionTitle } from '@/components/SharedUI';
+import LiquidEther from '@/components/LiquidEther';
+import GlowCard from '@/components/GlowCard';
 
 export default function HomePage() {
   const router = useRouter();
@@ -45,9 +47,32 @@ export default function HomePage() {
     { name: '星陨·暗影', mbti: 'INTJ', sign: '天蝎座', lvl: 0 },
   ];
 
+  const liquidEtherBg = useMemo(() => (
+    <div className="absolute inset-0 pointer-events-none" style={{ opacity: 0.38, mixBlendMode: 'screen', zIndex: 0 }}>
+      <LiquidEther
+        colors={['#5227FF', '#FF9FFC', '#B497CF']}
+        mouseForce={20}
+        cursorSize={100}
+        isViscous
+        viscous={30}
+        iterationsViscous={32}
+        iterationsPoisson={32}
+        resolution={0.5}
+        isBounce={false}
+        autoDemo
+        autoSpeed={0.5}
+        autoIntensity={2.2}
+        takeoverDuration={0.25}
+        autoResumeDelay={3000}
+        autoRampDuration={0.6}
+      />
+    </div>
+  ), []);
+
   return (
     <PageWrapper>
       <section ref={containerRef} className="relative min-h-[90dvh] flex flex-col items-center justify-center text-center px-5 overflow-hidden">
+        {liquidEtherBg}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center overflow-hidden">
           <div className="hero-aurora" style={{
             width: '75vw', maxWidth: 680, height: '55vw', maxHeight: 500,
@@ -77,9 +102,15 @@ export default function HomePage() {
         <div className="light-streak-2" style={{ left: 0 }} />
         <div className="light-streak-3" style={{ left: 0 }} />
 
+        <div className="absolute inset-x-0 bottom-0 pointer-events-none" style={{
+          height: 220,
+          background: 'linear-gradient(to bottom, transparent 0%, #060606 100%)',
+          zIndex: 6,
+        }} />
+
         <div className="relative z-10 fade-in max-w-4xl mx-auto">
           <div className="mb-7 flex justify-center scale-90 sm:scale-100">
-            <MeteorOrb size={110} level={getStage(energy)} glow={true} animate={true} />
+            <MeteorOrb size={110} level={4} glow={true} animate={true} />
           </div>
           <h1 className="hero-headline mx-auto px-2">星陨人格宇宙</h1>
           <p className="text-sm text-white/30 mt-3 tracking-[.22em] uppercase font-light">Meteor MBTI Universe</p>
@@ -102,15 +133,17 @@ export default function HomePage() {
         <SectionTitle eyebrow="已诞生的星陨" title="每颗都独一无二" sub="承载着主人的灵魂印记" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {exampleCards.map((c, i) => (
-            <div key={i} className="card p-5 text-center fade-in" style={{ animationDelay: `${i * .08}s` }}>
-              <div className="flex justify-center mb-4" style={{ minHeight: 120, alignItems: 'center' }}>
-                <MeteorOrb size={72} level={c.lvl} animate={true} />
-              </div>
-              <h3 className="font-medium text-white/85 text-sm">{c.name}</h3>
-              <div className="mt-2 flex gap-1 justify-center flex-wrap">
-                <span className="tag">{c.mbti}</span>
-                <span className="tag">{c.sign}</span>
-              </div>
+            <div key={i} className="fade-in" style={{ animationDelay: `${i * .08}s` }}>
+              <GlowCard className="p-5 text-center">
+                <div className="flex justify-center mb-4" style={{ minHeight: 120, alignItems: 'center' }}>
+                  <MeteorOrb size={72} level={c.lvl} animate={true} />
+                </div>
+                <h3 className="font-medium text-white/85 text-sm">{c.name}</h3>
+                <div className="mt-2 flex gap-1 justify-center flex-wrap">
+                  <span className="tag">{c.mbti}</span>
+                  <span className="tag">{c.sign}</span>
+                </div>
+              </GlowCard>
             </div>
           ))}
         </div>
@@ -138,23 +171,23 @@ export default function HomePage() {
             { icon: '🌱', title: '陨石养成', desc: '持续喂养让陨石从胚芽进化到超新星形态', action: '去养成', path: '/cultivate' },
             { icon: '🎁', title: '积分兑换', desc: '用积累的星星能量兑换天文馆专属奖品', action: '去商城', path: '/shop' },
           ].map((item, i) => (
-            <div key={i} className="card p-6 text-center">
+            <GlowCard key={i} className="p-6 text-center">
               <div className="text-3xl mb-3">{item.icon}</div>
               <h3 className="font-medium text-white/82 mb-2 text-sm">{item.title}</h3>
               <p className="text-xs text-white/35 mb-5 leading-relaxed">{item.desc}</p>
               <button onClick={() => router.push(item.path)} className="btn-outline text-xs" style={{ padding: '8px 18px' }}>
                 {item.action} →
               </button>
-            </div>
+            </GlowCard>
           ))}
         </div>
       </section>
 
       <section className="max-w-3xl mx-auto px-5 py-20 text-center">
         <SectionTitle eyebrow="永生机制" title="宇宙档案 · 永恒存在" />
-        <div className="card p-10 text-white/40 text-sm leading-relaxed">
+        <GlowCard className="p-10 text-white/40 text-sm leading-relaxed">
           每颗陨石人格一经铸造，即获得永久宇宙编号。它的成长记录、性格演化、星轨数据将被永久收录在星际档案馆中。即使星海变迁，你的陨石也将在这片数字宇宙中永恒闪耀。
-        </div>
+        </GlowCard>
       </section>
 
       <footer className="border-t border-white/05 py-10 text-center text-white/20 text-xs">

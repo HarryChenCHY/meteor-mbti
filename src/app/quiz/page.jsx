@@ -6,6 +6,7 @@ import { MOCK_QUIZ } from '@/lib/constants';
 import MeteorOrb from '@/components/MeteorOrb';
 import PageWrapper from '@/components/PageWrapper';
 import { SectionTitle } from '@/components/SharedUI';
+import GlowCard from '@/components/GlowCard';
 
 export default function QuizPage() {
   const router = useRouter();
@@ -62,7 +63,7 @@ export default function QuizPage() {
           </div>
         </div>
 
-        <div className="card p-7">
+        <GlowCard className="p-7">
           <div className="flex items-center gap-3 mb-5">
             <MeteorOrb size={34} level={0} glow={false} animate={false} />
             <span className="text-xs text-white/28">正在喂养：星陨·织梦者 · 答对 +20 ⚡</span>
@@ -84,7 +85,7 @@ export default function QuizPage() {
               {chosen === q.ans ? '✨ 正确！+20 星星能量' : '💫 加油，下次一定！'}
             </div>
           )}
-        </div>
+        </GlowCard>
 
         <div className="mt-5 flex justify-center gap-1.5">
           {MOCK_QUIZ.map((_, i) => (

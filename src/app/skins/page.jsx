@@ -5,6 +5,7 @@ import { STAGE_SKINS, STAGES, STAGE_THRESHOLDS, getStage, getStageProgress } fro
 import MeteorOrb from '@/components/MeteorOrb';
 import PageWrapper from '@/components/PageWrapper';
 import { SectionTitle } from '@/components/SharedUI';
+import GlowCard from '@/components/GlowCard';
 
 export default function SkinsPage() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function SkinsPage() {
       <div className="max-w-4xl mx-auto px-5 py-16">
         <SectionTitle eyebrow="皮肤图鉴" title="陨石形态演化" sub="通过天文答题积累星星能量，解锁越来越华丽的陨石形态" />
 
-        <div className="card p-5 mb-8 flex items-center justify-between">
+        <GlowCard className="p-5 mb-8 flex items-center justify-between">
           <div>
             <div className="text-xs text-white/28 mb-1.5 tracking-wide">当前星星能量</div>
             <div className="text-2xl font-bold text-white/88 tracking-tight">⚡ {energy}</div>
@@ -24,7 +25,7 @@ export default function SkinsPage() {
           <button onClick={() => router.push('/quiz')} className="btn-primary text-sm" style={{ padding: '10px 20px' }}>
             📝 去答题赚能量
           </button>
-        </div>
+        </GlowCard>
 
         <div className="space-y-4">
           {STAGE_SKINS.map((skin, i) => {
@@ -33,7 +34,8 @@ export default function SkinsPage() {
             const isNextUp = currentStage === i - 1;
             const neededEnergy = isUnlocked ? 0 : skin.threshold - energy;
             return (
-              <div key={i} className={`card p-5 transition-all duration-300 ${isCurrent ? '!border-white/25' : ''} ${!isUnlocked ? 'opacity-45' : ''}`}>
+              <div key={i} className={`transition-all duration-300 ${!isUnlocked ? 'opacity-45' : ''}`}>
+                <GlowCard className="p-5">
                 <div className="flex flex-col md:flex-row items-center gap-6">
                   <div className="shrink-0 relative flex items-center justify-center" style={{ minWidth: 120, minHeight: 120 }}>
                     <MeteorOrb size={96} level={i} glow={isUnlocked} animate={isUnlocked} />
@@ -77,13 +79,14 @@ export default function SkinsPage() {
                     </div>
                   )}
                 </div>
+                </GlowCard>
               </div>
             );
           })}
         </div>
 
         {currentStage < 4 && (
-          <div className="mt-8 text-center card p-8" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+          <GlowCard className="mt-8 text-center p-8">
             <div className="text-2xl mb-3">📝</div>
             <p className="text-white/65 font-medium mb-1.5">答题是唯一积累星星能量的方式</p>
             <p className="text-xs text-white/28 mb-6">
@@ -93,14 +96,14 @@ export default function SkinsPage() {
             <button onClick={() => router.push('/quiz')} className="btn-primary" style={{ padding: '11px 28px' }}>
               🚀 立即去答题解锁新形态
             </button>
-          </div>
+          </GlowCard>
         )}
         {currentStage >= 4 && (
-          <div className="mt-8 text-center card p-8" style={{ borderColor: 'rgba(255,255,255,0.18)' }}>
+          <GlowCard className="mt-8 text-center p-8">
             <div className="text-3xl mb-3">🌟</div>
             <p className="text-white/85 font-bold text-lg mb-1.5">已达传说级：超新星形态</p>
             <p className="text-xs text-white/30">你的陨石已进化至最高形态，在宇宙中熠熠生辉</p>
-          </div>
+          </GlowCard>
         )}
       </div>
     </PageWrapper>

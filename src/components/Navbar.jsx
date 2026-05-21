@@ -1,14 +1,29 @@
 'use client';
 import { useRouter, usePathname } from 'next/navigation';
+import GooeyNav from '@/components/GooeyNav';
+
+const GOOEY_COLORS = {
+  '--color-1': '#8b5cf6',
+  '--color-2': '#a78bfa',
+  '--color-3': '#c4b5fd',
+  '--color-4': '#f0abfc',
+};
+
+const pages = [
+  { key: '/', label: '首页' },
+  { key: '/create', label: '创建' },
+  { key: '/quiz', label: '答题' },
+  { key: '/shop', label: '积分商城' },
+  { key: '/archive', label: '档案' },
+  { key: '/cultivate', label: '养成' },
+  { key: '/skins', label: '皮肤图鉴' },
+];
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
-  const pages = [
-    { key: '/', label: '首页' }, { key: '/create', label: '创建' },
-    { key: '/quiz', label: '答题' }, { key: '/shop', label: '积分商城' },
-    { key: '/archive', label: '档案' }, { key: '/cultivate', label: '养成' }, { key: '/skins', label: '皮肤图鉴' }
-  ];
+  const activeIndex = Math.max(0, pages.findIndex(p => p.key === pathname));
+
   return (
     <nav className="hidden md:block top-nav">
       <div className="max-w-7xl mx-auto px-5 h-full flex items-center justify-between gap-4">
@@ -19,14 +34,22 @@ export default function Navbar() {
             <span className="block text-[9px] text-white/25 tracking-widest mt-px hidden lg:block">METEOR MBTI</span>
           </div>
         </div>
-        <div className="flex items-center gap-0.5">
-          {pages.map(p => (
-            <button key={p.key} onClick={() => router.push(p.key)}
-              className={`nav-tab ${pathname === p.key ? 'active' : ''}`}>
-              {p.label}
-            </button>
-          ))}
+
+        <div className="flex items-center" style={{ ...GOOEY_COLORS, background: '#060606', isolation: 'isolate', borderRadius: 9999 }}>
+          <GooeyNav
+            items={pages.map(p => ({ label: p.label, href: '#' }))}
+            onItemClick={(_, index) => router.push(pages[index].key)}
+            initialActiveIndex={activeIndex}
+            navClassName="flex gap-2 list-none p-0 px-2 m-0 relative z-[3]"
+            particleCount={12}
+            particleDistances={[70, 8]}
+            particleR={80}
+            animationTime={500}
+            timeVariance={200}
+            colors={[1, 2, 3, 1, 2, 3, 1, 4]}
+          />
         </div>
+
         <button onClick={() => router.push('/create')} className="btn-primary shrink-0" style={{ padding: '8px 18px', fontSize: '13px' }}>
           立即生成
         </button>
