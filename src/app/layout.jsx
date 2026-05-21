@@ -1,5 +1,5 @@
-import dynamic from 'next/dynamic';
 import { EnergyProvider } from '@/lib/energy-context';
+import ClientDarkVeil from '@/components/ClientDarkVeil';
 import StarsCanvas from '@/components/StarsCanvas';
 import Navbar from '@/components/Navbar';
 import MobileTopBar from '@/components/MobileTopBar';
@@ -7,8 +7,6 @@ import MobileTabBar from '@/components/MobileTabBar';
 import GlobalFooter from '@/components/GlobalFooter';
 import { Toaster } from '@/components/ui/sonner';
 import './globals.css';
-
-const DarkVeil = dynamic(() => import('@/components/DarkVeil'), { ssr: false });
 
 export const metadata = {
   title: '星陨人格宇宙',
@@ -22,7 +20,7 @@ export default function RootLayout({ children }) {
         <EnergyProvider>
           <div id="app">
             <div style={{ position: 'fixed', inset: 0, zIndex: 0, opacity: 0.22, mixBlendMode: 'screen', pointerEvents: 'none' }}>
-              <DarkVeil
+              <ClientDarkVeil
                 hueShift={255}
                 warpAmount={0.42}
                 speed={0.26}
