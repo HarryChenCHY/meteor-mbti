@@ -1,3 +1,4 @@
+'use client';
 export default function PlanetSphere({ size, style = 'pearl', ring = false, stars = false, extraStyle = {} }) {
   const s = size;
   const defs = {

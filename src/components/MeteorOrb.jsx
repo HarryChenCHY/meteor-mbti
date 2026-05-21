@@ -1,3 +1,4 @@
+'use client';
 export default function MeteorOrb({ size = 160, glow = true, animate = true, rarity, level }) {
   const lvl = level !== undefined ? level : (rarity === '传说' ? 4 : rarity === '稀有' ? 2 : 0);
 

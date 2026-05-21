@@ -1,6 +1,15 @@
-import { MORE_MENU } from '../constants';
+'use client';
+import { useRouter, usePathname } from 'next/navigation';
 
-export default function MoreMenuSheet({ open, onClose, onNavigate, current }) {
+const MORE_MENU = [
+  { key: '/archive', label: '宇宙档案', icon: '📂' },
+  { key: '/cultivate', label: '养成', icon: '🌱' },
+  { key: '/skins', label: '皮肤图鉴', icon: '🎨' }
+];
+
+export default function MoreMenuSheet({ open, onClose }) {
+  const router = useRouter();
+  const pathname = usePathname();
   if (!open) return null;
   return (
     <div className="md:hidden fixed inset-0 z-[55] flex flex-col justify-end" onClick={onClose}>
@@ -12,8 +21,8 @@ export default function MoreMenuSheet({ open, onClose, onNavigate, current }) {
         <p className="text-center text-xs text-white/30 mb-3 tracking-widest uppercase">更多</p>
         <div className="grid grid-cols-3 gap-2">
           {MORE_MENU.map(m => (
-            <button key={m.key} onClick={() => { onNavigate(m.key); onClose(); }}
-              className={`btn-tap flex flex-col items-center gap-1.5 py-3 rounded-xl border text-xs font-medium min-h-[4.5rem] transition-all ${current === m.key ? 'border-white/25 bg-white/08 text-white' : 'border-white/07 bg-white/03 text-white/45'}`}>
+            <button key={m.key} onClick={() => { router.push(m.key); onClose(); }}
+              className={`btn-tap flex flex-col items-center gap-1.5 py-3 rounded-xl border text-xs font-medium min-h-[4.5rem] transition-all ${pathname === m.key ? 'border-white/25 bg-white/08 text-white' : 'border-white/07 bg-white/03 text-white/45'}`}>
               <span className="text-xl">{m.icon}</span>
               <span>{m.label}</span>
             </button>
