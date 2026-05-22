@@ -35,15 +35,15 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="flex items-center" style={{ ...GOOEY_COLORS, background: '#060606', isolation: 'isolate', borderRadius: 9999 }}>
+        <div className="flex items-center" style={{ ...GOOEY_COLORS, background: '#060606', isolation: 'isolate', borderRadius: 9999, overflow: 'hidden' }}>
           <GooeyNav
             items={pages.map(p => ({ label: p.label, href: '#' }))}
             onItemClick={(_, index) => router.push(pages[index].key)}
             initialActiveIndex={activeIndex}
-            navClassName="flex gap-2 list-none p-0 px-2 m-0 relative z-[3]"
-            particleCount={12}
-            particleDistances={[70, 8]}
-            particleR={80}
+            navClassName="flex gap-2 list-none p-0 px-6 py-1.5 m-0 relative z-[3]"
+            particleCount={10}
+            particleDistances={[40, 6]}
+            particleR={40}
             animationTime={500}
             timeVariance={200}
             colors={[1, 2, 3, 1, 2, 3, 1, 4]}
