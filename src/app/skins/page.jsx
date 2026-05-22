@@ -2,6 +2,8 @@
 import { useRouter } from 'next/navigation';
 import { useEnergy } from '@/lib/energy-context';
 import { STAGE_SKINS, STAGES, STAGE_THRESHOLDS, getStage, getStageProgress } from '@/lib/constants';
+import { useQuizProgress } from '@/lib/quiz-progress';
+import { QUIZ_TOPICS } from '@/lib/quiz-data';
 import MeteorOrb from '@/components/MeteorOrb';
 import PageWrapper from '@/components/PageWrapper';
 import { SectionTitle } from '@/components/SharedUI';
@@ -10,7 +12,9 @@ import GlowCard from '@/components/GlowCard';
 export default function SkinsPage() {
   const router = useRouter();
   const { energy } = useEnergy();
+  const { progress } = useQuizProgress();
   const currentStage = getStage(energy);
+  const unlockedSkins = progress.unlockedSkins || [];
   return (
     <PageWrapper>
       <div className="max-w-4xl mx-auto px-5 py-16">
@@ -83,6 +87,62 @@ export default function SkinsPage() {
               </div>
             );
           })}
+        </div>
+
+        <div className="mt-16 mb-8">
+          <SectionTitle eyebrow="主题专属皮肤" title="通关解锁的主题陨石" sub="完成每个主题高级难度,获得对应的稀有陨石外观" />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {QUIZ_TOPICS.map(t => {
+              const unlocked = unlockedSkins.includes(t.skin);
+              const tp = progress.topics[t.id];
+              const passedHard = tp?.hard === 'passed';
+              return (
+                <GlowCard
+                  key={t.id}
+                  className={`p-5 transition-all ${unlocked ? '' : 'opacity-55'}`}
+                  style={unlocked ? { borderColor: t.skinColor + '55', boxShadow: `0 0 32px ${t.skinColor}22` } : undefined}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div
+                      className="w-14 h-14 rounded-full flex items-center justify-center text-2xl shrink-0"
+                      style={{
+                        background: unlocked
+                          ? `radial-gradient(circle at 30% 30%, ${t.skinColor}cc, ${t.skinColor}33 60%, transparent)`
+                          : 'rgba(255,255,255,0.04)',
+                        border: unlocked ? `1px solid ${t.skinColor}88` : '1px solid rgba(255,255,255,0.08)',
+                      }}
+                    >
+                      {unlocked ? t.icon : '🔒'}
+                    </div>
+                    {unlocked && (
+                      <span className="tag text-[10px] py-0.5 px-2" style={{ borderColor: t.skinColor + '66', color: t.skinColor }}>✓ 已解锁</span>
+                    )}
+                  </div>
+                  <h3 className="text-base font-semibold mb-1" style={{ color: unlocked ? t.skinColor : 'rgba(255,255,255,0.7)' }}>
+                    {t.skinName}
+                  </h3>
+                  <p className="text-[11px] text-white/35 mb-3 leading-relaxed">
+                    {unlocked
+                      ? `通关「${t.name}」高级难度获得`
+                      : passedHard
+                        ? '已通关高级,皮肤即将解锁'
+                        : `通关「${t.name}」高级难度解锁`}
+                  </p>
+                  {!unlocked && (
+                    <button
+                      onClick={() => router.push('/quiz')}
+                      className="text-[11px] text-white/45 hover:text-white/75 underline underline-offset-4"
+                    >
+                      去挑战 →
+                    </button>
+                  )}
+                </GlowCard>
+              );
+            })}
+          </div>
+          <p className="text-center text-xs text-white/30 mt-5">
+            已解锁 <span className="text-white/65 font-semibold">{unlockedSkins.length}</span> / {QUIZ_TOPICS.length} 款主题皮肤
+          </p>
         </div>
 
         {currentStage < 4 && (
