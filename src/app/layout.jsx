@@ -1,4 +1,5 @@
 import { EnergyProvider } from '@/lib/energy-context';
+import { QuizProgressProvider } from '@/lib/quiz-progress';
 import ClientDarkVeil from '@/components/ClientDarkVeil';
 import StarsCanvas from '@/components/StarsCanvas';
 import Navbar from '@/components/Navbar';
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
     <html lang="zh">
       <body>
         <EnergyProvider>
+          <QuizProgressProvider>
           <div id="app">
             <div style={{ position: 'fixed', inset: 0, zIndex: 0, opacity: 0.22, mixBlendMode: 'screen', pointerEvents: 'none' }}>
               <ClientDarkVeil
@@ -38,6 +40,7 @@ export default function RootLayout({ children }) {
             <MobileTabBar />
           </div>
           <Toaster />
+          </QuizProgressProvider>
         </EnergyProvider>
       </body>
     </html>
